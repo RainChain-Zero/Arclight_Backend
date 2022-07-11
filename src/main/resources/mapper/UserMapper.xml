@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rainchain.arclight.mapper.UserMapper">
+
+    <select id="searchIdGame" resultType="com.rainchain.arclight.entity.Game">
+        SELECT *
+        FROM games_now
+        WHERE id = ${id}
+    </select>
+
+    <select id="searchKpGames" resultType="com.rainchain.arclight.entity.Game">
+        SELECT *
+        FROM games_now
+        WHERE kp_qq = #{kp_qq}
+        ORDER BY start_time LIMIT ${maxnum}
+    </select>
+
+    <select id="searchAllGames" resultType="com.rainchain.arclight.entity.Game">
+        SELECT *
+        FROM games_now
+        ORDER BY start_time LIMIT ${maxnum}
+    </select>
+
+    <select id="searchGames" resultType="com.rainchain.arclight.entity.Game">
+        SELECT *
+        FROM games_now
+        WHERE title LIKE #{title}
+          AND start_time >= #{data_now}
+          AND #{start_time} >= start_time
+          AND ${last_timeh} >= last_timeh
+          AND minper >= ${minper}
+          AND ${maxper} >= maxper
+        ORDER BY start_time LIMIT ${maxnum}
+    </select>
+
+</mapper>

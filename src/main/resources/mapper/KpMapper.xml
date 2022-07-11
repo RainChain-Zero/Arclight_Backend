@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rainchain.arclight.mapper.KpMapper">
+    <select id="nameCheck" resultType="int">
+        SELECT COUNT(*)
+        FROM games_now
+        WHERE title = #{title}
+          AND kp_qq = #{kp_qq}
+    </select>
+    <insert id="addGame" parameterType="com.rainchain.arclight.entity.Game" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO games_now (title, kp_name, kp_qq, start_time, last_time, last_timeh, minper, maxper, isfull, tags,
+                               des)
+        VALUES (#{title}, #{kp_name}, #{kp_qq}, #{start_time}, #{last_time}, #{last_timeh}, #{minper}, #{maxper},
+                #{isfull}, #{tags},
+                #{des});
+        INSERT INTO games_all (title, kp_name, kp_qq, start_time, last_time, last_timeh, minper, maxper, isfull, tags,
+                               des)
+        VALUES (#{title}, #{kp_name}, #{kp_qq}, #{start_time}, #{last_time}, #{last_timeh}, #{minper}, #{maxper},
+                #{isfull}, #{tags},
+                #{des});
+    </insert>
+    <update id="updateGame">
+        UPDATE games_now
+        SET title=#{title},
+            kp_name=#{kp_name},
+            kp_qq=#{kp_qq},
+            start_time=#{start_time},
+            last_time=#{last_time},
+            last_timeh=#{last_timeh},
+            minper = #{minper},
+            maxper=#{maxper},
+            isfull=#{isfull},
+            tags=#{tags},
+            des=#{des}
+        WHERE id = ${id};
+        UPDATE games_all
+        SET title=#{title},
+            kp_name=#{kp_name},
+            kp_qq=#{kp_qq},
+            start_time=#{start_time},
+            last_time=#{last_time},
+            last_timeh=#{last_timeh},
+            minper = #{minper},
+            maxper=#{maxper},
+            isfull=#{isfull},
+            tags=#{tags},
+            des=#{des}
+        WHERE id = ${id};
+        INSERT INTO games_update (id, title, kp_name, kp_qq, start_time, last_time, last_timeh, minper, maxper, isfull,
+                                  tags,
+                                  des, update_time)
+        VALUES (#{id}, #{title}, #{kp_name}, #{kp_qq}, #{start_time}, #{last_time}, #{last_timeh}, #{minper}, #{maxper},
+                #{isfull}, #{tags},
+                #{des}, #{update_time});
+    </update>
+    <delete id="deleteGame" parameterType="com.rainchain.arclight.component.DeleteInfo">
+        DELETE
+        FROM games_now
+        WHERE id = ${id}
+          AND kp_qq = #{qq}
+    </delete>
+    <update id="addDeleteInfo" parameterType="com.rainchain.arclight.component.DeleteInfo">
+        UPDATE games_all
+        SET delete_info = #{info}
+        WHERE id = ${id}
+    </update>
+    <insert id="addIrregularGame">
+        INSERT INTO games_irregular (title, kp_qq, delete_time, des, category, keywords)
+        VALUES (#{title}, #{kp_qq}, #{deleteTime}, #{des}, #{Label}, #{Keywords})
+    </insert>
+</mapper>
