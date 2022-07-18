@@ -1,9 +1,12 @@
 package com.rainchain.arclight.utils;
 
 
+import org.mozilla.universalchardet.Constants;
+
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /*
 f*ck content-type
@@ -15,6 +18,10 @@ public class EncodingUtils {
         ServletInputStream reader = request.getInputStream();
         byte[] buffer = new byte[len];
         reader.read(buffer, 0, len);
-        return new String(buffer, "GBK");
+        if (CharsetDetectUtil.detect(buffer).equals(Constants.CHARSET_GB18030))
+            return new String(buffer, "GB18030");
+        else {
+            return new String(buffer, StandardCharsets.UTF_8);
+        }
     }
 }
