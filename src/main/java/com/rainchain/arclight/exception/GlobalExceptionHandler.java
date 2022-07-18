@@ -16,6 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -44,7 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = TencentCloudSDKException.class)
-    public ResultData<String>tencentCloudSDKException(TencentCloudSDKException e){
+    public ResultData<String> tencentCloudSDKException(TencentCloudSDKException e) {
         return ResultData.fail(e.toString());
     }
 
@@ -65,6 +67,18 @@ public class GlobalExceptionHandler {
     public ResultData<String> nullPointerException(NullPointerException e) {
         log.error("空指针异常:" + e.getMessage());
         return ResultData.fail("请检验参数是否正确，检查无误后仍然错误请联系我们");
+    }
+
+    @ExceptionHandler(value = UnsupportedEncodingException.class)
+    public ResultData<String> unsupportedEncodingException(UnsupportedEncodingException e) {
+        log.error(e.getMessage());
+        return ResultData.fail("不支持的编码格式！");
+    }
+
+    @ExceptionHandler(value = IOException.class)
+    public ResultData<String> iOException(IOException e) {
+        log.error(e.getMessage());
+        return ResultData.fail("服务器内部错误！");
     }
 
     @ExceptionHandler(value = Exception.class)

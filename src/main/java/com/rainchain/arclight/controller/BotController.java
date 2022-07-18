@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @Slf4j
 @RestController
 public class BotController {
@@ -29,7 +28,7 @@ public class BotController {
     public String signUp(@RequestBody @Validated BotAccount botAccount) {
         VerifyUtils.qqVerify(botAccount.getQq());
 
-        if (redisUtils.hasBotQqCache(botAccount.getQq())){
+        if (redisUtils.hasBotQqCache(botAccount.getQq())) {
             throw new OperationFailException("此QQ号已被注册！");
         }
 
@@ -37,7 +36,7 @@ public class BotController {
     }
 
     @GetMapping("/searchKey")
-    public String searchKey(@Validated BotAccount botAccount){
+    public String searchKey(@Validated BotAccount botAccount) {
         VerifyUtils.qqVerify(botAccount.getQq());
 
         return botService.searchKey(botAccount);

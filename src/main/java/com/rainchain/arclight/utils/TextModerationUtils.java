@@ -22,6 +22,7 @@ public class TextModerationUtils {
 
     private static final String secretId = "";
     private static final String secretKey = "";
+
     @SuppressWarnings("all")
     public static AuditResult textModerate(String str) throws TencentCloudSDKException {
         Credential cred = new Credential(secretId, secretKey);

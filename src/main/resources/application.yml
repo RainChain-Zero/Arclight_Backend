@@ -1,16 +1,19 @@
 spring:
   datasource:
     username: root
-    password: root
-    url: jdbc:mysql://arclight.space:123456/arclight?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true
+    password: 1234
+    url: jdbc:mysql://arclight.space:1234/arclight?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
-    host: arclight.space
-    port: 123456
-    password: Arclight_2022
+    host: xxxx
+    port: 1234
+    password: 1234
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 
 server:
-  port: 45445
+  port: 1234
+  tomcat:
+    uri-encoding: UTF-8
+

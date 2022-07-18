@@ -8,11 +8,16 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import java.security.SecureRandom;
 
-
+/**
+ * @author 慕北_Innocent
+ * @version 1.0
+ * @date 2022/2/12 20:20
+ */
 public class DesUtils {
-
+    //这是使用DES加密算法所需要的key——RainChain 2022.01.15
     private static final byte[] DES_KEY = {};
 
+    //密码的加密DES算法——RainChain 2022.01.15)
     public static String encryptBasedDes(String password) {
         String encryptedPassword;
         try {
