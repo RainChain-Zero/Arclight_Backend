@@ -4,7 +4,6 @@ package com.rainchain.arclight.utils;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /*
 f*ck content-type
@@ -16,7 +15,6 @@ public class EncodingUtils {
         ServletInputStream reader = request.getInputStream();
         byte[] buffer = new byte[len];
         reader.read(buffer, 0, len);
-        //转换成UTF-8格式
-        return new String(buffer, StandardCharsets.UTF_8);
+        return new String(buffer, "GBK");
     }
 }
