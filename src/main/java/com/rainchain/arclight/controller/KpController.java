@@ -39,7 +39,7 @@ public class KpController {
         return kpService.addGame(game);
     }
 
-    @PostMapping("/update")
+    @PostMapping(value = "/update", produces = {"application/json;charset=UTF-8"})
     public List<Game> updateGame(HttpServletRequest request) throws TencentCloudSDKException, IOException {
         String content = EncodingUtils.charReader(request);
 

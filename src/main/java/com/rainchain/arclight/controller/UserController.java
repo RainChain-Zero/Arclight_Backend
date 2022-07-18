@@ -8,7 +8,8 @@ import com.rainchain.arclight.utils.TimeUtils;
 import com.rainchain.arclight.utils.VerifyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/search")
+    @GetMapping(value = "/search", produces = {"application/json;charset=UTF-8"})
     public List<Game> searchKpGames(@Validated SearchCondition searchCondition) {
         String qq = searchCondition.getKp_qq();
         int maxnum = searchCondition.getMaxnum();

@@ -15,7 +15,7 @@ import java.security.SecureRandom;
  */
 public class DesUtils {
     //这是使用DES加密算法所需要的key——RainChain 2022.01.15
-    private static final byte[] DES_KEY = {};
+    private static final byte[] DES_KEY = {1, 41, 113, -111, 73, 101, -91, -53};
 
     //密码的加密DES算法——RainChain 2022.01.15)
     public static String encryptBasedDes(String password) {

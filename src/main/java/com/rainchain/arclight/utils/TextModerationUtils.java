@@ -20,9 +20,8 @@ import java.util.Map;
 @Slf4j
 public class TextModerationUtils {
 
-    private static final String secretId = "";
-    private static final String secretKey = "";
-
+    private static final String secretId = "AKIDMWbOt61e2B3f05sQghRs2wZuyjCNEp89";
+    private static final String secretKey = "lEPJwJPElzwc2C5gz3qy6ybz83jHbibE";
     @SuppressWarnings("all")
     public static AuditResult textModerate(String str) throws TencentCloudSDKException {
         Credential cred = new Credential(secretId, secretKey);
