@@ -1,7 +1,6 @@
 package com.rainchain.arclight.mapper;
 
 
-import com.rainchain.arclight.component.DeleteInfo;
 import com.rainchain.arclight.entity.AuditResult;
 import com.rainchain.arclight.entity.Game;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,9 +15,9 @@ public interface KpMapper {
 
     void updateGame(Game game);
 
-    int deleteGame(DeleteInfo deleteInfo);
+    int deleteGame(Long id, String qq);
 
-    void addDeleteInfo(DeleteInfo deleteInfo);
+    void addDeleteInfo(Long id, String info);
 
     void addIrregularGame(AuditResult auditResult);
 }

@@ -32,7 +32,6 @@ public class KpController {
     @PostMapping("/add")
     public int addGame(HttpServletRequest request) throws TencentCloudSDKException, IOException {
         String content = EncodingUtils.charReader(request);
-
         Game game = VerifyUtils.verifyGame(JSON.parseObject(content, Game.class));
         VerifyUtils.qqVerify(game.getKp_qq());
         TextModerationUtils.auditText(game, kpService);
@@ -42,7 +41,6 @@ public class KpController {
     @PostMapping(value = "/update", produces = {"application/json;charset=UTF-8"})
     public List<Game> updateGame(HttpServletRequest request) throws TencentCloudSDKException, IOException {
         String content = EncodingUtils.charReader(request);
-
         Game game = JSON.parseObject(content, Game.class);
         if (game.getId() == null) {
             throw new OperationFailException("id字段为空");
@@ -66,8 +64,8 @@ public class KpController {
     }
 
     @PostMapping("/delete")
-    public void deleteGame(@RequestBody @Validated DeleteInfo deleteInfo, @RequestParam("api_key") String key) {
+    public List<Boolean> deleteGame(@RequestBody @Validated DeleteInfo deleteInfo, @RequestParam("api_key") String key) {
         VerifyUtils.qqVerify(deleteInfo.getQq());
-        kpService.deleteGame(deleteInfo, key);
+        return kpService.deleteGame(deleteInfo, key);
     }
 }

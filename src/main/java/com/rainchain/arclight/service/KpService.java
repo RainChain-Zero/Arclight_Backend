@@ -6,7 +6,8 @@ import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.mapper.KpMapper;
 import com.rainchain.arclight.mapper.UserMapper;
-import com.rainchain.arclight.utils.*;
+import com.rainchain.arclight.utils.TimeUtils;
+import com.rainchain.arclight.utils.VerifyUtils;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class KpService {
         return game.getId();
     }
 
-    public List<Game> updateGame(Game gameOld,Game gameNew) throws TencentCloudSDKException {
+    public List<Game> updateGame(Game gameOld, Game gameNew) throws TencentCloudSDKException {
 
         kpMapper.updateGame(gameNew);
 
@@ -43,20 +44,23 @@ public class KpService {
         return gameList;
     }
 
-    public void deleteGame(DeleteInfo deleteInfo, String key) {
+    public List<Boolean> deleteGame(DeleteInfo deleteInfo, String key) {
         String qq = deleteInfo.getQq();
         String timeNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-
         String botQq = VerifyUtils.decodeQq(key);
-
         deleteInfo.setInfo(qq + "在" + timeNow + "通过" + botQq + "删除");
-        if (kpMapper.deleteGame(deleteInfo) == 0) {
-            throw new OperationFailException("删除失败！没有对应id的团或指定团不属于你");
-        }
-        kpMapper.addDeleteInfo(deleteInfo);
 
-        //todo 缓存删除数据
-
+        List<Boolean> res = new ArrayList<>();
+        //批量删除
+        deleteInfo.getId().forEach(id -> {
+            if (kpMapper.deleteGame(id, qq) == 0) {
+                res.add(false);
+            } else {
+                kpMapper.addDeleteInfo(id, deleteInfo.getInfo());
+                res.add(true);
+            }
+        });
+        return res;
     }
 
     public void addIrregularGame(AuditResult auditResult) {
