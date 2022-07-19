@@ -18,9 +18,8 @@ public class FrequencyInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws OperationFailException, UnsupportedEncodingException {
-        request.setCharacterEncoding("UTF-8");
         String api_key = request.getParameter("api_key");
-        if (api_key == null){
+        if (api_key == null) {
             throw new OperationFailException("api_key不能为空！");
         }
         return redisUtils.isFrequent(api_key);

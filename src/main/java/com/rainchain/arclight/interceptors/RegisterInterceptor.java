@@ -19,7 +19,6 @@ public class RegisterInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws OperationFailException, UnsupportedEncodingException {
-        request.setCharacterEncoding("UTF-8");
         String ipAddress = IpUtils.getIpAddr(request);
         if (ipAddress == null || ipAddress.equals("")) {
             return true;

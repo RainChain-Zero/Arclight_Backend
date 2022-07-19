@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.rainchain</groupId>
     <artifactId>arclight</artifactId>
-    <version>1.0.5-Alpha</version>
+    <version>1.0.9-Alpha</version>
     <name>Arclight</name>
     <description>Arclight</description>
     <properties>
@@ -76,7 +76,11 @@
             <!-- 请到https://search.maven.org/search?q=tencentcloud-sdk-java查询所有版本，最新版本如下 -->
             <version>3.1.536</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.googlecode.juniversalchardet</groupId>
+            <artifactId>juniversalchardet</artifactId>
+            <version>1.0.3</version>
+        </dependency>
     </dependencies>
 
     <build>
