@@ -38,7 +38,7 @@ public class KpController {
         return kpService.addGame(game);
     }
 
-    @PostMapping(value = "/update", produces = {"application/json;charset=UTF-8"})
+    @PostMapping("/update")
     public List<Game> updateGame(HttpServletRequest request) throws TencentCloudSDKException, IOException {
         String content = EncodingUtils.charReader(request);
         Game game = JSON.parseObject(content, Game.class);
@@ -53,7 +53,7 @@ public class KpController {
         if (gameOld.getKp_qq().compareTo(game.getKp_qq()) != 0) {
             throw new OperationFailException("只有主持人才能修改该团信息");
         }
-        boolean isDesNull = gameOld.getDes() == null;
+        boolean isDesNull = game.getDes() == null;
         Game gameNew = gameOld.updateGame(game);
 
         //修改的信息中描述部分非空才审核

@@ -18,9 +18,10 @@ public class EncodingUtils {
         ServletInputStream reader = request.getInputStream();
         byte[] buffer = new byte[len];
         reader.read(buffer, 0, len);
-        if (CharsetDetectUtil.detect(buffer).equals(Constants.CHARSET_GB18030))
+        String res = CharsetDetectUtil.detect(buffer);
+        if (res != null && res.equals(Constants.CHARSET_GB18030)) {
             return new String(buffer, "GB18030");
-        else {
+        } else {
             return new String(buffer, StandardCharsets.UTF_8);
         }
     }

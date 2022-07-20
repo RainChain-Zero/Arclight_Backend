@@ -18,7 +18,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/search", produces = {"application/json;charset=UTF-8"})
+    @GetMapping("/search")
     public List<Game> searchKpGames(@Validated SearchCondition searchCondition) {
         String qq = searchCondition.getKp_qq();
         int maxnum = searchCondition.getMaxnum();
