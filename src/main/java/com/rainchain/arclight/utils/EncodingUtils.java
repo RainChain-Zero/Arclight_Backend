@@ -19,7 +19,7 @@ public class EncodingUtils {
         byte[] buffer = new byte[len];
         reader.read(buffer, 0, len);
         String res = CharsetDetectUtil.detect(buffer);
-        if (res != null && res.equals(Constants.CHARSET_GB18030)) {
+        if (null == res || res.equals(Constants.CHARSET_GB18030)) {
             return new String(buffer, "GB18030");
         } else {
             return new String(buffer, StandardCharsets.UTF_8);

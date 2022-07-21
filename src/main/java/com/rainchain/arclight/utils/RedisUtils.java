@@ -54,7 +54,10 @@ public class RedisUtils {
                 adminMapper.addFrequencyWarning(new FrequencyWarning(qq, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
                 throw new OperationFailException("请求频率过快，请稍后再试");
             }
-            redisTemplate.opsForValue().set(key, String.valueOf(frequency), redisTemplate.getExpire(key), TimeUnit.SECONDS);
+            Long expireTime = redisTemplate.getExpire(key);
+            if (null != expireTime) {
+                redisTemplate.opsForValue().set(key, String.valueOf(frequency), expireTime, TimeUnit.SECONDS);
+            }
         }
         return true;
     }
