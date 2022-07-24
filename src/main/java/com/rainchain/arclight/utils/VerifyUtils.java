@@ -70,6 +70,10 @@ public class VerifyUtils {
         if (game.getDes().equals("") || game.getDes() == null) {
             throw new OperationFailException("团描述不能为空！");
         }
-        return game;
+        if (game.getRestricted() != null) {
+            throw new OperationFailException("不可以对参数restricted赋值！");
+        }
+
+        return Game.getRestricted(game);
     }
 }

@@ -1,5 +1,8 @@
 package com.rainchain.arclight.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.rainchain.arclight.component.Players;
+import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,16 +16,21 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
+@JsonIgnoreProperties(value = {"update_time", "restricted", "groups"})
 public class Game {
+    //校验是否全为数字
+    private static final java.util.regex.Pattern NUMBER_PATTERN = java.util.regex.Pattern.compile("-?\\d+(\\.\\d+)?");
     @Null(message = "不可以对id参数赋值")
-    private Integer id ;
+    private Long id;
 
     @NotBlank(message = "团名不能为空")
     private String title;
@@ -32,6 +40,13 @@ public class Game {
 
     @Length(min = 5, max = 10, message = "主持人QQ号非法！")
     private String kp_qq;
+
+    //parm
+    private List<String> groups;
+    //data
+    private String restricted;
+
+    private List<Players> players;
 
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "开团日期格式错误")
     private String start_time;
@@ -53,10 +68,37 @@ public class Game {
     @NotBlank(message = "团标签不能为空")
     private String tags;
 
+    private String skills;
+
+    private String tips;
     @NotBlank(message = "团描述不能为空")
     private String des;
 
-    private String update_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    private final String update_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
+    //从groups参数获得DB参数restricted
+    public static Game getRestricted(Game game) {
+        //校验限制群
+        List<String> groups = game.getGroups();
+        if (groups != null && groups.size() > 0) {
+            StringBuilder restricted = new StringBuilder();
+            groups.forEach(group -> {
+                if (group.length() < 6 || group.length() > 10 || !NUMBER_PATTERN.matcher(group).matches()) {
+                    throw new OperationFailException("QQ群号有误！");
+                }
+                restricted.append(group).append(",");
+            });
+            //字符串最后一个,用于后续查询时匹配，不可删去
+            game.setRestricted(new String(restricted));
+        }
+        return game;
+    }
+
+    //从DB参数restricted获得groups参数
+    public static Game getGroups(Game game) {
+        game.setGroups(Arrays.asList(game.getRestricted().split(",")));
+        return game;
+    }
 
     public Game updateGame(Game gameNew) {
         Game gameNow = new Game();
@@ -64,6 +106,7 @@ public class Game {
         gameNow.title = gameNew.title == null ? this.title : gameNew.title;
         gameNow.kp_name = gameNew.kp_name == null ? this.kp_name : gameNew.kp_name;
         gameNow.kp_qq = gameNew.kp_qq == null ? this.kp_qq : gameNew.kp_qq;
+        gameNow.groups = gameNew.groups == null ? this.groups : gameNew.groups;
         gameNow.start_time = gameNew.start_time == null ? this.start_time : gameNew.start_time;
         gameNow.last_time = gameNew.last_time == null ? this.last_time : gameNew.last_time;
         gameNow.last_timeh = TimeUtils.convertToTimeH(gameNow.last_time);
@@ -71,8 +114,9 @@ public class Game {
         gameNow.maxper = gameNew.maxper == null ? this.maxper : gameNew.maxper;
         gameNow.isfull = gameNew.isfull;
         gameNow.tags = gameNew.tags == null ? this.tags : gameNew.tags;
+        gameNow.skills = gameNew.skills == null ? this.skills : gameNew.skills;
+        gameNow.tips = gameNew.tips == null ? this.tips : gameNew.tips;
         gameNow.des = gameNew.des == null ? this.des : gameNew.des;
-        return gameNow;
+        return Game.getRestricted(gameNow);
     }
-
 }

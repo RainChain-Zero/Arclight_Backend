@@ -44,9 +44,10 @@ public class KpController {
         }
         List<Game> gameSearch = userService.searchIdGame(game.getId());
         if (gameSearch == null || gameSearch.size() == 0) {
-            throw new OperationFailException("找不到对应id的团！");
+            throw new OperationFailException("找不到对应id的团");
         }
-        Game gameOld = gameSearch.get(0);
+        Game gameOld = Game.getGroups(gameSearch.get(0));
+
         if (gameOld.getKp_qq().compareTo(game.getKp_qq()) != 0) {
             throw new OperationFailException("只有主持人才能修改该团信息");
         }

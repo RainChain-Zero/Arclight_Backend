@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,6 +43,15 @@ public class UserController {
             searchCondition.setLast_timeh(TimeUtils.convertToTimeH(lastTime));
         }
 
+        //模糊匹配限制群
+        List<String> groups = searchCondition.getGroups();
+        if (groups != null && groups.size() > 0) {
+            List<String> tmp = new ArrayList<>();
+            groups.forEach(group -> {
+                tmp.add("%" + group + ",%");
+            });
+            searchCondition.setGroups(tmp);
+        }
         return userService.searchGames(searchCondition);
     }
 

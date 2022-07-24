@@ -40,6 +40,13 @@
                             <if test="maxper!=null">
                                 AND ${maxper} >= maxper
                             </if>
+                            <if test="groups!=null and groups.size()>0">
+                                AND
+                                <foreach collection="groups" item="item" open="(ISNULL(restricted) OR " separator=" OR "
+                                         close=")">
+                                    restricted LIKE #{item}
+                                </foreach>
+                            </if>
                         </otherwise>
                     </choose>
                 </otherwise>
