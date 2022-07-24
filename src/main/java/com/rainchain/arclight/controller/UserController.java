@@ -19,28 +19,30 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/search")
-    public List<Game> searchKpGames(@Validated SearchCondition searchCondition) {
+    public List<Game> searchGames(@Validated SearchCondition searchCondition) {
         String qq = searchCondition.getKp_qq();
-        int maxnum = searchCondition.getMaxnum();
 
         //模糊匹配
-        searchCondition.setTitle("%" + searchCondition.getTitle() + "%");
-        VerifyUtils.qqVerify(qq);
-        if (searchCondition.getData_now().compareTo(searchCondition.getStart_time()) > 0) {
+        if (searchCondition.getTitle() != null) {
+            searchCondition.setTitle("%" + searchCondition.getTitle() + "%");
+        }
+        //校验qq号
+        if (qq != null) {
+            VerifyUtils.qqVerify(qq);
+        }
+        //校验开团时间
+        String start_time = searchCondition.getStart_time();
+        if (start_time != null && searchCondition.getData_now().compareTo(start_time) > 0) {
             throw new OperationFailException("指定日期不能早于当日");
         }
 
         //将团持续时间统一成小时制
         String lastTime = searchCondition.getLast_time();
-        searchCondition.setLast_timeh(TimeUtils.convertToTimeH(lastTime));
-
-        if (searchCondition.getId() != -1) {
-            return userService.searchIdGame(searchCondition.getId());
-        } else if (!searchCondition.getKp_qq().equals("00000")) {
-            return userService.searchKpGames(qq, maxnum);
-        } else {
-            return searchCondition.isAll() ? userService.searchAllGames(maxnum) : userService.searchGames(searchCondition);
+        if (searchCondition.getLast_time() != null) {
+            searchCondition.setLast_timeh(TimeUtils.convertToTimeH(lastTime));
         }
+
+        return userService.searchGames(searchCondition);
     }
 
 }

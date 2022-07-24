@@ -8,7 +8,6 @@ import com.rainchain.arclight.mapper.KpMapper;
 import com.rainchain.arclight.mapper.UserMapper;
 import com.rainchain.arclight.utils.TimeUtils;
 import com.rainchain.arclight.utils.VerifyUtils;
-import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class KpService {
     @Autowired
     private UserMapper userMapper;
 
-    public int addGame(Game game) {
+    public Long addGame(Game game) {
         //统一持续时间单位
         game.setLast_timeh(TimeUtils.convertToTimeH(game.getLast_time()));
         if (kpMapper.nameCheck(game) > 0) {
@@ -34,7 +33,7 @@ public class KpService {
         return game.getId();
     }
 
-    public List<Game> updateGame(Game gameOld, Game gameNew) throws TencentCloudSDKException {
+    public List<Game> updateGame(Game gameOld, Game gameNew) {
 
         kpMapper.updateGame(gameNew);
 

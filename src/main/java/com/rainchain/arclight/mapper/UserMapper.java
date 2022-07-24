@@ -10,11 +10,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface UserMapper {
-    List<Game> searchIdGame(int id);
-
-    List<Game> searchKpGames(String kp_qq, int maxnum);
-
-    List<Game> searchAllGames(int maxnum);
+    List<Game> searchIdGame(Long id);
 
     List<Game> searchGames(SearchCondition searchCondition);
 }

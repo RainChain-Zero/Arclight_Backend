@@ -44,7 +44,8 @@
             skills=#{skills},
             tips=#{tips},
             des=#{des}
-        WHERE id = ${id};
+        WHERE kp_qq = #{kp_qq}
+          AND id = ${id};
         UPDATE games_all
         SET title=#{title},
             kp_name=#{kp_name},

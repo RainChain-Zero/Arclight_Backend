@@ -13,16 +13,8 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<Game> searchIdGame(int id) {
+    public List<Game> searchIdGame(Long id) {
         return userMapper.searchIdGame(id);
-    }
-
-    public List<Game> searchKpGames(String qq, int maxnum) {
-        return userMapper.searchKpGames(qq, maxnum);
-    }
-
-    public List<Game> searchAllGames(int maxnum) {
-        return userMapper.searchAllGames(maxnum);
     }
 
     public List<Game> searchGames(SearchCondition searchCondition) {

@@ -5,7 +5,6 @@ import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.service.BotService;
 import com.rainchain.arclight.utils.RedisUtils;
 import com.rainchain.arclight.utils.VerifyUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 public class BotController {
 
@@ -35,10 +33,17 @@ public class BotController {
         return botService.signUp(botAccount);
     }
 
+    //找回key
     @GetMapping("/searchKey")
     public String searchKey(@Validated BotAccount botAccount) {
         VerifyUtils.qqVerify(botAccount.getQq());
 
         return botService.searchKey(botAccount);
+    }
+
+    //获取当前脚本版本号
+    @GetMapping("/version")
+    public String getVersion() {
+        return redisUtils.getVersion();
     }
 }

@@ -8,28 +8,43 @@
         WHERE id = ${id}
     </select>
 
-    <select id="searchKpGames" resultType="com.rainchain.arclight.entity.Game">
-        SELECT *
-        FROM games_now
-        WHERE kp_qq = #{kp_qq}
-        ORDER BY start_time LIMIT ${maxnum}
-    </select>
-
-    <select id="searchAllGames" resultType="com.rainchain.arclight.entity.Game">
-        SELECT *
-        FROM games_now
-        ORDER BY start_time LIMIT ${maxnum}
-    </select>
-
     <select id="searchGames" resultType="com.rainchain.arclight.entity.Game">
         SELECT *
         FROM games_now
-        WHERE title LIKE #{title}
-          AND start_time >= #{data_now}
-          AND #{start_time} >= start_time
-          AND ${last_timeh} >= last_timeh
-          AND minper >= ${minper}
-          AND ${maxper} >= maxper
+        <where>
+            <choose>
+                <when test="id!=null and id.size()>0">
+                    AND id IN
+                    <foreach collection="id" item="id" open="(" separator="," close=")">
+                        ${id}
+                    </foreach>
+                </when>
+                <otherwise>
+                    <choose>
+                        <when test="kp_qq!=null">
+                            AND kp_qq = #{kp_qq}
+                        </when>
+                        <otherwise>
+                            <if test="title!=null">
+                                AND title LIKE #{title}
+                            </if>
+                            <if test="last_timeh!=null">
+                                AND #{last_timeh} >= last_timeh
+                            </if>
+                            <if test="start_time!=null">
+                                AND #{start_time} >= start_time
+                            </if>
+                            <if test="minper!=null">
+                                AND minper >= ${minper}
+                            </if>
+                            <if test="maxper!=null">
+                                AND ${maxper} >= maxper
+                            </if>
+                        </otherwise>
+                    </choose>
+                </otherwise>
+            </choose>
+        </where>
         ORDER BY start_time LIMIT ${maxnum}
     </select>
 
