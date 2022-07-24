@@ -68,9 +68,14 @@ public class RedisUtils {
         } else {
             redisTemplate.opsForHash().increment("ip", ipAddress, 1);
         }
-        if ((Integer) redisTemplate.opsForHash().get("ip", ipAddress) > 10) {
+        Object times = redisTemplate.opsForHash().get("ip", ipAddress);
+        if (times != null && (Integer) times > 10) {
             throw new OperationFailException("同一ip下最多注册10个账号");
         }
         return true;
+    }
+
+    public String getVersion() {
+        return (String) redisTemplate.opsForValue().get("version");
     }
 }
