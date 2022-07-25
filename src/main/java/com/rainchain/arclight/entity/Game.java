@@ -1,8 +1,11 @@
 package com.rainchain.arclight.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.rainchain.arclight.component.Players;
+import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.exception.OperationFailException;
+import com.rainchain.arclight.mybatis.PlayersListTypeHandler;
 import com.rainchain.arclight.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +28,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-@JsonIgnoreProperties(value = {"update_time", "restricted", "groups"})
+@JsonIgnoreProperties(value = {"update_time", "restricted"})
+@TableName(autoResultMap = true)
 public class Game {
     //校验是否全为数字
     private static final java.util.regex.Pattern NUMBER_PATTERN = java.util.regex.Pattern.compile("-?\\d+(\\.\\d+)?");
@@ -46,7 +50,8 @@ public class Game {
     //data
     private String restricted;
 
-    private List<Players> players;
+    @TableField(typeHandler = PlayersListTypeHandler.class)
+    private List<Player> players;
 
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "开团日期格式错误")
     private String start_time;
@@ -100,6 +105,8 @@ public class Game {
         return game;
     }
 
+    //将tags转为小写
+
     public Game updateGame(Game gameNew) {
         Game gameNow = new Game();
         gameNow.id = this.id;
@@ -117,6 +124,8 @@ public class Game {
         gameNow.skills = gameNew.skills == null ? this.skills : gameNew.skills;
         gameNow.tips = gameNew.tips == null ? this.tips : gameNew.tips;
         gameNow.des = gameNew.des == null ? this.des : gameNew.des;
+        //不能通过updata修改参团玩家
+        gameNow.players = this.players;
         return Game.getRestricted(gameNow);
     }
 }

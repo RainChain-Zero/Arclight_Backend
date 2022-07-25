@@ -2,7 +2,6 @@ package com.rainchain.arclight.exception;
 
 
 import com.rainchain.arclight.utils.ResultData;
-import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.validation.BindException;
@@ -18,6 +17,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -45,10 +45,6 @@ public class GlobalExceptionHandler {
         return ResultData.fail(message.toString());
     }
 
-    @ExceptionHandler(value = TencentCloudSDKException.class)
-    public ResultData<String> tencentCloudSDKException(TencentCloudSDKException e) {
-        return ResultData.fail(e.toString());
-    }
 
     //处理自定义异常
     @ExceptionHandler(value = OperationFailException.class)
@@ -62,29 +58,37 @@ public class GlobalExceptionHandler {
         return ResultData.fail(e.getMessage());
     }
 
-    //空指针异常
-    @ExceptionHandler(value = NullPointerException.class)
-    public ResultData<String> nullPointerException(NullPointerException e) {
-        log.error("空指针异常:" + e.getMessage());
-        return ResultData.fail("请检验参数是否正确，检查无误后仍然错误请联系我们");
-    }
+//    //空指针异常
+//    @ExceptionHandler(value = NullPointerException.class)
+//    public ResultData<String> nullPointerException(NullPointerException e) {
+//        log.error("空指针异常:" + e.getMessage());
+//        return ResultData.fail("请检验参数是否正确，检查无误后仍然错误请联系我们");
+//    }
 
+    //编码错误
     @ExceptionHandler(value = UnsupportedEncodingException.class)
     public ResultData<String> unsupportedEncodingException(UnsupportedEncodingException e) {
         log.error(e.getMessage());
         return ResultData.fail("不支持的编码格式！");
     }
 
-    @ExceptionHandler(value = IOException.class)
-    public ResultData<String> iOException(IOException e) {
-        log.error(e.getMessage());
+    //SQL错误
+    @ExceptionHandler(value = SQLException.class)
+    public ResultData<String> sqlException(SQLException e) {
+        e.printStackTrace();
         return ResultData.fail("服务器内部错误！");
     }
 
-    @ExceptionHandler(value = Exception.class)
-    public ResultData<String> innerErrorException(Exception e) {
-        log.error(e.getMessage());
-        return ResultData.fail(e.getMessage());
+    @ExceptionHandler(value = IOException.class)
+    public ResultData<String> iOException(IOException e) {
+        e.printStackTrace();
+        return ResultData.fail("服务器内部错误！");
     }
+
+//    @ExceptionHandler(value = Exception.class)
+//    public ResultData<String> innerErrorException(Exception e) {
+//        log.error(e.getMessage());
+//        return ResultData.fail(e.getMessage());
+//    }
 
 }

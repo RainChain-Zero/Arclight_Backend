@@ -22,8 +22,8 @@ public class WebConfigurer implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(apiKeyInterceptor).addPathPatterns("/**").excludePathPatterns("/register").excludePathPatterns("/searchKey");
-        registry.addInterceptor(frequencyInterceptor).addPathPatterns("/**").excludePathPatterns("/register").excludePathPatterns("/searchKey");
+        registry.addInterceptor(apiKeyInterceptor).addPathPatterns("/**").excludePathPatterns("/register", "/searchKey", "/version");
+        registry.addInterceptor(frequencyInterceptor).addPathPatterns("/**").excludePathPatterns("/register", "/searchKey", "/version");
         registry.addInterceptor(registerInterceptor).addPathPatterns("/register");
     }
 }

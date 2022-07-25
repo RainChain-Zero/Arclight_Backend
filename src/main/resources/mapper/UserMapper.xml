@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
 <mapper namespace="com.rainchain.arclight.mapper.UserMapper">
 
-    <select id="searchIdGame" resultType="com.rainchain.arclight.entity.Game">
+    <resultMap id="searchGame" type="com.rainchain.arclight.entity.Game">
+        <id property="id" column="id"/>
+        <result property="players" column="players" jdbcType="VARCHAR"
+                javaType="java.util.List"
+                typeHandler="com.rainchain.arclight.mybatis.PlayersListTypeHandler"/>
+    </resultMap>
+
+    <select id="searchIdGame" resultMap="searchGame">
         SELECT *
         FROM games_now
         WHERE id = ${id}
     </select>
 
-    <select id="searchGames" resultType="com.rainchain.arclight.entity.Game">
+    <select id="searchGames" resultMap="searchGame">
         SELECT *
         FROM games_now
         <where>
@@ -47,6 +55,12 @@
                                     restricted LIKE #{item}
                                 </foreach>
                             </if>
+                            <if test="tags!=null and tags.size()>0">
+                                AND
+                                <foreach collection="tags" item="item" separator=" AND ">
+                                    tags LIKE #{item}
+                                </foreach>
+                            </if>
                         </otherwise>
                     </choose>
                 </otherwise>
@@ -55,4 +69,9 @@
         ORDER BY start_time LIMIT ${maxnum}
     </select>
 
+    <update id="joinGames">
+        UPDATE games_now
+        SET players=#{players,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler}
+        WHERE id = ${id}
+    </update>
 </mapper>

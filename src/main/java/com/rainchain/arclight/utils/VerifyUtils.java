@@ -1,9 +1,12 @@
 package com.rainchain.arclight.utils;
 
 
+import com.rainchain.arclight.component.JoinOrQuitInfo;
+import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.exception.OperationFailException;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 
@@ -28,7 +31,7 @@ public class VerifyUtils {
     }
 
     public static void qqVerify(String qq) {
-        if (!Pattern.compile("[0-9]*").matcher(qq).matches()) {
+        if (!Pattern.compile("\\d*").matcher(qq).matches() || qq.length() < 5 || qq.length() > 10) {
             throw new OperationFailException("不合法的QQ号！");
         }
     }
@@ -36,6 +39,19 @@ public class VerifyUtils {
     public static String decodeQq(String key) {
         String keyDecrypted = DesUtils.decryptBasedDes(Base64Utils.convertToPlain(key));
         return keyDecrypted.substring(0, keyDecrypted.indexOf("arclight"));
+    }
+
+    //校验JoinOrQuitInfo
+    public static void verifyJoinOrQuitInfo(JoinOrQuitInfo joinOrQuitInfo) {
+        List<Long> ids = joinOrQuitInfo.getId();
+        Player player = joinOrQuitInfo.getPlayer();
+        if (null == ids || ids.size() == 0) {
+            throw new OperationFailException("至少需要提供一个id");
+        }
+        if (null == player) {
+            throw new OperationFailException("缺少玩家信息");
+        }
+        VerifyUtils.qqVerify(player.getQq());
     }
 
     //校验game参数

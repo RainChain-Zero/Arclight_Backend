@@ -8,7 +8,9 @@ public class CharsetDetectUtil {
         UniversalDetector detector = new UniversalDetector(null);
 
         detector.handleData(content, 0, content.length);
+
         detector.dataEnd();
+
         return detector.getDetectedCharset();
     }
 }
