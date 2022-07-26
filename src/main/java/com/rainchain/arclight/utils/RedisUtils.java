@@ -55,7 +55,7 @@ public class RedisUtils {
                 throw new OperationFailException("请求频率过快，请稍后再试");
             }
             Long expireTime = redisTemplate.getExpire(key);
-            if (null != expireTime) {
+            if (null != expireTime && expireTime > 0) {
                 redisTemplate.opsForValue().set(key, String.valueOf(frequency), expireTime, TimeUnit.SECONDS);
             }
         }

@@ -1,10 +1,11 @@
 package com.rainchain.arclight.entity;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rainchain.arclight.component.Player;
-import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.mybatis.PlayersListTypeHandler;
 import com.rainchain.arclight.utils.TimeUtils;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,11 +29,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-@JsonIgnoreProperties(value = {"update_time", "restricted"})
+@JsonIgnoreProperties(value = {"update_time"})
 @TableName(autoResultMap = true)
 public class Game {
-    //校验是否全为数字
-    private static final java.util.regex.Pattern NUMBER_PATTERN = java.util.regex.Pattern.compile("-?\\d+(\\.\\d+)?");
     @Null(message = "不可以对id参数赋值")
     private Long id;
 
@@ -45,13 +44,11 @@ public class Game {
     @Length(min = 5, max = 10, message = "主持人QQ号非法！")
     private String kp_qq;
 
-    //parm
-    private List<String> groups;
-    //data
-    private String restricted;
+    @TableField(typeHandler = FastjsonTypeHandler.class)
+    private List<String> groups = new ArrayList<>();
 
     @TableField(typeHandler = PlayersListTypeHandler.class)
-    private List<Player> players;
+    private List<Player> players = new ArrayList<>();
 
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "开团日期格式错误")
     private String start_time;
@@ -81,32 +78,6 @@ public class Game {
 
     private final String update_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-    //从groups参数获得DB参数restricted
-    public static Game getRestricted(Game game) {
-        //校验限制群
-        List<String> groups = game.getGroups();
-        if (groups != null && groups.size() > 0) {
-            StringBuilder restricted = new StringBuilder();
-            groups.forEach(group -> {
-                if (group.length() < 6 || group.length() > 10 || !NUMBER_PATTERN.matcher(group).matches()) {
-                    throw new OperationFailException("QQ群号有误！");
-                }
-                restricted.append(group).append(",");
-            });
-            //字符串最后一个,用于后续查询时匹配，不可删去
-            game.setRestricted(new String(restricted));
-        }
-        return game;
-    }
-
-    //从DB参数restricted获得groups参数
-    public static Game getGroups(Game game) {
-        game.setGroups(Arrays.asList(game.getRestricted().split(",")));
-        return game;
-    }
-
-    //将tags转为小写
-
     public Game updateGame(Game gameNew) {
         Game gameNow = new Game();
         gameNow.id = this.id;
@@ -126,6 +97,8 @@ public class Game {
         gameNow.des = gameNew.des == null ? this.des : gameNew.des;
         //不能通过updata修改参团玩家
         gameNow.players = this.players;
-        return Game.getRestricted(gameNow);
+        //对限定群groups去重
+        gameNow.groups = CollUtil.distinct(gameNow.groups);
+        return gameNow;
     }
 }

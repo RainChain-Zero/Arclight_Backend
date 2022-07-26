@@ -1,8 +1,10 @@
 package com.rainchain.arclight.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSON;
 import com.rainchain.arclight.component.DeleteInfo;
 import com.rainchain.arclight.entity.Game;
+import com.rainchain.arclight.entity.InviteOrRemoveInfo;
 import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.service.KpService;
 import com.rainchain.arclight.service.UserService;
@@ -43,10 +45,10 @@ public class KpController {
             throw new OperationFailException("id字段为空");
         }
         List<Game> gameSearch = userService.searchIdGame(game.getId());
-        if (gameSearch == null || gameSearch.size() == 0) {
+        if (CollUtil.isEmpty(gameSearch)) {
             throw new OperationFailException("找不到对应id的团");
         }
-        Game gameOld = Game.getGroups(gameSearch.get(0));
+        Game gameOld = gameSearch.get(0);
 
         if (gameOld.getKp_qq().compareTo(game.getKp_qq()) != 0) {
             throw new OperationFailException("只有主持人才能修改该团信息");
@@ -60,5 +62,19 @@ public class KpController {
     public List<Boolean> deleteGame(@RequestBody @Validated DeleteInfo deleteInfo, @RequestParam("api_key") String key) {
         VerifyUtils.qqVerify(deleteInfo.getQq());
         return kpService.deleteGame(deleteInfo, key);
+    }
+
+    @PostMapping("/invite")
+    public List<Boolean> invitePlayers(HttpServletRequest request) throws IOException {
+        String content = EncodingUtils.charReader(request);
+        InviteOrRemoveInfo inviteOrRemoveInfo = JSON.parseObject(content, InviteOrRemoveInfo.class);
+        VerifyUtils.verifyInviteOrRemoveInfo(inviteOrRemoveInfo);
+        return kpService.invitePlayers(inviteOrRemoveInfo);
+    }
+
+    @PostMapping("/remove")
+    public List<Boolean> removePlayers(@RequestBody @Validated InviteOrRemoveInfo inviteOrRemoveInfo) {
+        VerifyUtils.verifyInviteOrRemoveInfo(inviteOrRemoveInfo);
+        return kpService.removePlayers(inviteOrRemoveInfo);
     }
 }

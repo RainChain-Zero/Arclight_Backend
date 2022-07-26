@@ -21,4 +21,5 @@ public class JoinOrQuitInfoDB {
 
     @TableField(typeHandler = FastjsonTypeHandler.class)
     private List<Player> players;
+
 }

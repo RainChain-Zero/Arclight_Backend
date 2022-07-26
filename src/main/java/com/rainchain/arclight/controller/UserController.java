@@ -1,19 +1,17 @@
 package com.rainchain.arclight.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.rainchain.arclight.component.JoinOrQuitInfo;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
-import com.rainchain.arclight.exception.OperationFailException;
+import com.rainchain.arclight.entity.ParticipatingGames;
 import com.rainchain.arclight.service.UserService;
 import com.rainchain.arclight.utils.EncodingUtils;
 import com.rainchain.arclight.utils.VerifyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -29,14 +27,15 @@ public class UserController {
     public List<Game> searchGames(@Validated SearchCondition searchCondition) {
         String qq = searchCondition.getKp_qq();
         //校验qq号
-        if (qq != null) {
+        if (!StrUtil.isBlank(qq)) {
             VerifyUtils.qqVerify(qq);
         }
-        //校验开团时间
-        String start_time = searchCondition.getStart_time();
-        if (start_time != null && searchCondition.getData_now().compareTo(start_time) > 0) {
-            throw new OperationFailException("指定日期不能早于当日");
-        }
+
+//        //校验开团时间
+//        String start_time = searchCondition.getStart_time();
+//        if (!StrUtil.isBlank(start_time) && searchCondition.getData_now().compareTo(start_time) > 0) {
+//            throw new OperationFailException("指定日期不能早于当日");
+//        }
 
         return userService.searchGames(searchCondition);
     }
@@ -59,4 +58,12 @@ public class UserController {
         VerifyUtils.verifyJoinOrQuitInfo(joinOrQuitInfo);
         return userService.quitGames(joinOrQuitInfo);
     }
+
+    //todo 完成查询已加入的团功能
+    @GetMapping("/participate")
+    public List<ParticipatingGames> getParticipatingGames(@RequestParam("qq") String qq) {
+        VerifyUtils.qqVerify(qq);
+        return userService.getParticipatingGames(qq);
+    }
+
 }

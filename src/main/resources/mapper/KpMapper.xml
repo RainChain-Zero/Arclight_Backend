@@ -8,14 +8,14 @@
           AND kp_qq = #{kp_qq}
     </select>
     <insert id="addGame" parameterType="com.rainchain.arclight.entity.Game" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO games_now (title, kp_name, kp_qq, restricted, start_time, last_time, last_timeh, minper, maxper,
+        INSERT INTO games_now (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
                                isfull,
                                tags,
                                skills, tips, des)
         VALUES (#{title},
                 #{kp_name},
                 #{kp_qq},
-                #{restricted},
+                #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
                 #{start_time},
                 #{last_time},
                 #{last_timeh},
@@ -26,12 +26,12 @@
                 #{skills},
                 #{tips},
                 #{des});
-        INSERT INTO games_all (title, kp_name, kp_qq, restricted, start_time, last_time, last_timeh, minper, maxper,
+        INSERT INTO games_all (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
                                isfull,
                                tags,
                                skills, tips, des)
         VALUES (#{title}, #{kp_name}, #{kp_qq},
-                #{restricted},
+                #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
                 #{start_time}, #{last_time}, #{last_timeh}, #{minper},
                 #{maxper},
                 #{isfull}, #{tags}, #{skills}, #{tips}, #{des});
@@ -41,7 +41,7 @@
         SET title=#{title},
             kp_name=#{kp_name},
             kp_qq=#{kp_qq},
-            restricted=#{restricted},
+            groups=#{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
             start_time=#{start_time},
             last_time=#{last_time},
             last_timeh=#{last_timeh},
@@ -58,7 +58,7 @@
         SET title=#{title},
             kp_name=#{kp_name},
             kp_qq=#{kp_qq},
-            restricted=#{restricted},
+            groups=#{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
             start_time=#{start_time},
             last_time=#{last_time},
             last_timeh=#{last_timeh},
@@ -70,13 +70,13 @@
             tips=#{tips},
             des=#{des}
         WHERE id = ${id};
-        INSERT INTO games_update (id, title, kp_name, kp_qq, restricted, start_time, last_time, last_timeh, minper,
+        INSERT INTO games_update (id, title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper,
                                   maxper,
                                   isfull,
                                   tags, skills, tips
             , des, update_time)
         VALUES (#{id}, #{title}, #{kp_name}, #{kp_qq},
-                #{restricted},
+                #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
                 #{start_time}, #{last_time}, #{last_timeh},
                 #{minper},
                 #{maxper},
@@ -98,4 +98,18 @@
         INSERT INTO games_irregular (title, kp_qq, delete_time, des, category, keywords)
         VALUES (#{title}, #{kp_qq}, #{deleteTime}, #{des}, #{Label}, #{Keywords})
     </insert>
+
+    <update id="inviteOrRemovePlayers">
+        UPDATE games_now
+        SET players=
+        <choose>
+            <when test="players!=null and players.size()>0">
+                #{players,jdbcType=VARCHAR,typeHandler=com.rainchain.arclight.mybatis.PlayersListTypeHandler}
+            </when>
+            <otherwise>
+                '[]'
+            </otherwise>
+        </choose>
+        WHERE kp_qq = #{kp_qq} AND id = ${id}
+    </update>
 </mapper>

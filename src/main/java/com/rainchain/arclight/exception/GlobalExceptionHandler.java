@@ -2,6 +2,7 @@ package com.rainchain.arclight.exception;
 
 
 import com.rainchain.arclight.utils.ResultData;
+import io.lettuce.core.RedisCommandExecutionException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.validation.BindException;
@@ -58,12 +59,12 @@ public class GlobalExceptionHandler {
         return ResultData.fail(e.getMessage());
     }
 
-//    //空指针异常
-//    @ExceptionHandler(value = NullPointerException.class)
-//    public ResultData<String> nullPointerException(NullPointerException e) {
-//        log.error("空指针异常:" + e.getMessage());
-//        return ResultData.fail("请检验参数是否正确，检查无误后仍然错误请联系我们");
-//    }
+    //空指针异常
+    @ExceptionHandler(value = NullPointerException.class)
+    public ResultData<String> nullPointerException(NullPointerException e) {
+        log.error("空指针异常:" + e.getMessage());
+        return ResultData.fail("请检验参数是否正确，检查无误后仍然错误请联系我们");
+    }
 
     //编码错误
     @ExceptionHandler(value = UnsupportedEncodingException.class)
@@ -79,16 +80,23 @@ public class GlobalExceptionHandler {
         return ResultData.fail("服务器内部错误！");
     }
 
+    //Redis错误
+    @ExceptionHandler(value = RedisCommandExecutionException.class)
+    public ResultData<String> redisCommandExecutionException(RedisCommandExecutionException e) {
+        e.printStackTrace();
+        return ResultData.fail("缓存读取失败，请重试一次");
+    }
+
     @ExceptionHandler(value = IOException.class)
     public ResultData<String> iOException(IOException e) {
         e.printStackTrace();
         return ResultData.fail("服务器内部错误！");
     }
 
-//    @ExceptionHandler(value = Exception.class)
-//    public ResultData<String> innerErrorException(Exception e) {
-//        log.error(e.getMessage());
-//        return ResultData.fail(e.getMessage());
-//    }
+    @ExceptionHandler(value = Exception.class)
+    public ResultData<String> innerErrorException(Exception e) {
+        log.error(e.getMessage());
+        return ResultData.fail(e.getMessage());
+    }
 
 }

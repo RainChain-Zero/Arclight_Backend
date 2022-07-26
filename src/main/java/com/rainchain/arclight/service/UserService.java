@@ -6,6 +6,7 @@ import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.JoinOrQuitInfoDB;
+import com.rainchain.arclight.entity.ParticipatingGames;
 import com.rainchain.arclight.mapper.UserMapper;
 import com.rainchain.arclight.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +35,8 @@ public class UserService {
             searchCondition.setLast_timeh(TimeUtils.convertToTimeH(lastTime));
         }
 
-        //模糊匹配限制群
-        List<String> groups = searchCondition.getGroups();
-        if (groups != null && groups.size() > 0) {
-            List<String> tmp = new ArrayList<>();
-            groups.forEach(group -> {
-                tmp.add("%" + group + ",%");
-            });
-            searchCondition.setGroups(tmp);
-        }
-
-        //模糊匹配tags
-        return userMapper.searchGames(SearchCondition.tagsSearcher(searchCondition));
+        //模糊匹配tags和group
+        return userMapper.searchGames(SearchCondition.tagsAndGroupSearcher(searchCondition));
     }
 
     public List<Boolean> joinGames(JoinOrQuitInfo joinOrQuitInfo) {
@@ -53,13 +44,18 @@ public class UserService {
         String playerQQ = player.getQq();
         List<Boolean> res = new ArrayList<>();
         JoinOrQuitInfoDB joinOrQuitInfoDB = new JoinOrQuitInfoDB();
-        List<Long> ids = CollUtil.distinct(joinOrQuitInfo.getId());
-        //对每个id单独判断是否加入成功(对id集合去重)
-        for (Long id : ids) {
+        //去重
+        //对每个id单独判断是否加入成功
+        for (Long id : joinOrQuitInfo.getId()) {
             joinOrQuitInfoDB.setId(id);
             //先提取id对应的团数据
             List<Game> games = userMapper.searchIdGame(id);
             if (CollUtil.isEmpty(games)) {
+                res.add(false);
+                continue;
+            }
+            //满人的团无法加入
+            if (games.get(0).isIsfull()) {
                 res.add(false);
                 continue;
             }
@@ -78,7 +74,7 @@ public class UserService {
                 if (flag) {
                     playerList.add(player);
                     joinOrQuitInfoDB.setPlayers(playerList);
-                    userMapper.joinGames(joinOrQuitInfoDB);
+                    userMapper.joinOrQuitGames(joinOrQuitInfoDB);
                     res.add(true);
                 } else {
                     res.add(false);
@@ -88,7 +84,7 @@ public class UserService {
                     add(player);
                 }};
                 joinOrQuitInfoDB.setPlayers(playerList);
-                userMapper.joinGames(joinOrQuitInfoDB);
+                userMapper.joinOrQuitGames(joinOrQuitInfoDB);
                 res.add(true);
             }
         }
@@ -99,9 +95,9 @@ public class UserService {
     public List<Boolean> quitGames(JoinOrQuitInfo joinOrQuitInfo) {
         String playerQQ = joinOrQuitInfo.getPlayer().getQq();
         List<Boolean> res = new ArrayList<>();
-        List<Long> ids = CollUtil.distinct(joinOrQuitInfo.getId());
+
         JoinOrQuitInfoDB joinOrQuitInfoDB = new JoinOrQuitInfoDB();
-        for (Long id : ids) {
+        for (Long id : joinOrQuitInfo.getId()) {
             joinOrQuitInfoDB.setId(id);
             List<Game> games = userMapper.searchIdGame(id);
             if (CollUtil.isEmpty(games)) {
@@ -116,19 +112,19 @@ public class UserService {
             }
             int length = playerList.size();
             //从玩家列表中删除对应玩家
-            playerList = CollUtil.filter(playerList, player -> {
-                if (player.getQq().equals(playerQQ)) {
-                    return false;
-                }
-                return true;
-            });
+            playerList = CollUtil.filter(playerList, player -> !player.getQq().equals(playerQQ));
             if (playerList.size() < length) {
-                //todo 修改数据库
+                joinOrQuitInfoDB.setPlayers(playerList);
+                userMapper.joinOrQuitGames(joinOrQuitInfoDB);
                 res.add(true);
             } else {
                 res.add(false);
             }
         }
         return res;
+    }
+
+    public List<ParticipatingGames> getParticipatingGames(String qq) {
+        return userMapper.getParticipatingGames(qq);
     }
 }

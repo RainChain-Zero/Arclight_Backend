@@ -1,5 +1,7 @@
 package com.rainchain.arclight.component;
 
+import cn.hutool.core.collection.CollUtil;
+import com.rainchain.arclight.utils.VerifyUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +33,7 @@ public class SearchCondition {
     @Length(min = 5, max = 10, message = "不合法的QQ号！")
     private String kp_qq;
 
-    private List<String> groups;
+    private String group;
 
     private String title;
 
@@ -58,7 +60,7 @@ public class SearchCondition {
     //tags模糊匹配
     public static SearchCondition tagsSearcher(SearchCondition searchCondition) {
         List<String> tags = searchCondition.getTags();
-        if (null != tags) {
+        if (!CollUtil.isEmpty(tags)) {
             List<String> tmp = new ArrayList<>();
             tags.forEach(tag -> {
                 tmp.add("%" + tag + "%");
@@ -66,5 +68,19 @@ public class SearchCondition {
             searchCondition.setTags(tmp);
         }
         return searchCondition;
+    }
+
+    //限定群
+    public static SearchCondition groupSearcher(SearchCondition searchCondition) {
+        String group = searchCondition.getGroup();
+        if (null != group) {
+            VerifyUtils.groupVerify(group);
+            searchCondition.setGroup("%\"" + group + "\"%");
+        }
+        return searchCondition;
+    }
+
+    public static SearchCondition tagsAndGroupSearcher(SearchCondition searchCondition) {
+        return SearchCondition.groupSearcher(SearchCondition.tagsSearcher(searchCondition));
     }
 }
