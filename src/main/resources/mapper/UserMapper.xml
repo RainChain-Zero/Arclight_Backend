@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.rainchain.arclight.mapper.UserMapper">
+
+    <!--List<Player>对JsonArray的结果映射-->
+    <resultMap id="searchGame" type="com.rainchain.arclight.entity.Game">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="kp_name" column="kp_name"/>
+        <result property="kp_qq" column="kp_qq"/>
+        <result property="groups" column="groups" javaType="java.util.List" jdbcType="VARCHAR"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler"/>
+        <result property="players" column="players" jdbcType="VARCHAR"
+                javaType="java.util.List"
+                typeHandler="com.rainchain.arclight.mybatis.PlayersListTypeHandler"/>
+        <result property="start_time" column="start_time"/>
+        <result property="last_time" column="last_time"/>
+        <result property="last_timeh" column="last_timeh"/>
+        <result property="minper" column="minper"/>
+        <result property="maxper" column="maxper"/>
+        <result property="isfull" column="isfull" javaType="Boolean" jdbcType="TINYINT"/>
+        <result property="tags" column="tags"/>
+        <result property="skills" column="skills"/>
+        <result property="tips" column="tips"/>
+        <result property="des" column="des"/>
+    </resultMap>
+
+    <select id="searchIdGame" resultMap="searchGame">
+        SELECT *
+        FROM games_now
+        WHERE id = ${id}
+    </select>
+
+    <select id="searchGames" parameterType="com.rainchain.arclight.component.SearchCondition" resultMap="searchGame">
+        SELECT *
+        FROM games_now
+        <where>
+            <if test="group!=null">
+                AND (ISNULL(groups) OR groups='[]' OR groups LIKE #{group})
+            </if>
+            <choose>
+                <when test="id!=null and id.size()>0">
+                    AND id IN
+                    <foreach collection="id" item="id" open="(" separator="," close=")">
+                        ${id}
+                    </foreach>
+                </when>
+                <otherwise>
+                    <choose>
+                        <when test="kp_qq!=null">
+                            AND kp_qq = #{kp_qq}
+                        </when>
+                        <otherwise>
+                            <if test="title!=null">
+                                AND title LIKE #{title}
+                            </if>
+                            <if test="last_timeh!=null">
+                                AND #{last_timeh} >= last_timeh
+                            </if>
+                            <if test="start_time!=null">
+                                AND #{start_time} >= start_time
+                            </if>
+                            <if test="minper!=null">
+                                AND minper >= ${minper}
+                            </if>
+                            <if test="maxper!=null">
+                                AND ${maxper} >= maxper
+                            </if>
+                            <if test="tags!=null and tags.size()>0">
+                                AND
+                                <foreach collection="tags" item="item" separator=" AND ">
+                                    tags LIKE #{item}
+                                </foreach>
+                            </if>
+                        </otherwise>
+                    </choose>
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY start_time LIMIT ${maxnum}
+    </select>
+
+    <update id="joinOrQuitGames">
+        UPDATE games_now
+        SET players=#{players,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler}
+        WHERE id = ${id}
+    </update>
+
+    <select id="getParticipatingGames" resultType="com.rainchain.arclight.entity.ParticipatingGames">
+        SELECT *
+        FROM games_user
+        WHERE qq = #{qq}
+    </select>
+</mapper>

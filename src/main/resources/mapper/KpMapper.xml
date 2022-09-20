@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rainchain.arclight.mapper.KpMapper">
+    <select id="nameCheck" resultType="int">
+        SELECT COUNT(*)
+        FROM games_now
+        WHERE title = #{title}
+          AND kp_qq = #{kp_qq}
+    </select>
+    <insert id="addGame" parameterType="com.rainchain.arclight.entity.Game" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO games_now (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
+                               isfull,
+                               tags,
+                               skills, tips, des)
+        VALUES (#{title},
+                #{kp_name},
+                #{kp_qq},
+                #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
+                #{start_time},
+                #{last_time},
+                #{last_timeh},
+                #{minper},
+                #{maxper},
+                #{isfull},
+                #{tags},
+                #{skills},
+                #{tips},
+                #{des});
+        INSERT INTO games_all (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
+                               isfull,
+                               tags,
+                               skills, tips, des)
+        VALUES (#{title}, #{kp_name}, #{kp_qq},
+                #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
+                #{start_time}, #{last_time}, #{last_timeh}, #{minper},
+                #{maxper},
+                #{isfull}, #{tags}, #{skills}, #{tips}, #{des});
+    </insert>
+    <update id="updateGame">
+        UPDATE games_now
+        SET title=#{title},
+            kp_name=#{kp_name},
+            kp_qq=#{kp_qq},
+            groups=#{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
+            start_time=#{start_time},
+            last_time=#{last_time},
+            last_timeh=#{last_timeh},
+            minper = #{minper},
+            maxper=#{maxper},
+            isfull=#{isfull},
+            tags=#{tags},
+            skills=#{skills},
+            tips=#{tips},
+            des=#{des}
+        WHERE kp_qq = #{kp_qq}
+          AND id = ${id};
+        UPDATE games_all
+        SET title=#{title},
+            kp_name=#{kp_name},
+            kp_qq=#{kp_qq},
+            groups=#{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
+            start_time=#{start_time},
+            last_time=#{last_time},
+            last_timeh=#{last_timeh},
+            minper = #{minper},
+            maxper=#{maxper},
+            isfull=#{isfull},
+            tags=#{tags},
+            skills=#{skills},
+            tips=#{tips},
+            des=#{des}
+        WHERE id = ${id};
+        INSERT INTO games_update (id, title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper,
+                                  maxper,
+                                  isfull,
+                                  tags, skills, tips
+            , des, update_time)
+        VALUES (#{id}, #{title}, #{kp_name}, #{kp_qq},
+                #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
+                #{start_time}, #{last_time}, #{last_timeh},
+                #{minper},
+                #{maxper},
+                #{isfull}, #{tags}, #{skills}, #{tips},
+                #{des}, #{update_time});
+    </update>
+    <delete id="deleteGame">
+        DELETE
+        FROM games_now
+        WHERE id = ${id}
+          AND kp_qq = #{qq}
+    </delete>
+    <update id="addDeleteInfo">
+        UPDATE games_all
+        SET delete_info = #{info}
+        WHERE id = ${id}
+    </update>
+    <insert id="addIrregularGame">
+        INSERT INTO games_irregular (title, kp_qq, delete_time, des, category, keywords)
+        VALUES (#{title}, #{kp_qq}, #{deleteTime}, #{des}, #{Label}, #{Keywords})
+    </insert>
+
+    <update id="inviteOrRemovePlayers">
+        UPDATE games_now
+        SET players=
+        <choose>
+            <when test="players!=null and players.size()>0">
+                #{players,jdbcType=VARCHAR,typeHandler=com.rainchain.arclight.mybatis.PlayersListTypeHandler}
+            </when>
+            <otherwise>
+                '[]'
+            </otherwise>
+        </choose>
+        WHERE kp_qq = #{kp_qq} AND id = ${id}
+    </update>
+</mapper>
