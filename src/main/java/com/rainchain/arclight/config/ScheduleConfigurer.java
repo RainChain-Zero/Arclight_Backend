@@ -19,8 +19,8 @@ public class ScheduleConfigurer {
 
     @Scheduled(cron = "0 0 4 * * ?")
     public void cleanGames() {
-        //过期超过一天的团从即时团本中删除
-        cleanMapper.cleanGames(new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime() - 3 * 24 * 60 * 60 * 1000L));
+        //满人且不收ob的团，过期7天后从即时团本中删除
+        cleanMapper.cleanGames(new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime() - 7 * 24 * 60 * 60 * 1000L));
     }
 
 }

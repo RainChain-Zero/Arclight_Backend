@@ -20,6 +20,7 @@
         <result property="minper" column="minper"/>
         <result property="maxper" column="maxper"/>
         <result property="isfull" column="isfull" javaType="Boolean" jdbcType="TINYINT"/>
+        <result property="ob" column="ob" javaType="Boolean" jdbcType="TINYINT"/>
         <result property="tags" column="tags"/>
         <result property="skills" column="skills"/>
         <result property="tips" column="tips"/>

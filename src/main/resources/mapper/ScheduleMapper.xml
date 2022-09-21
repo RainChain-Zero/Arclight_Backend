@@ -4,6 +4,8 @@
     <delete id="cleanGames">
         DELETE
         FROM games_now
-        WHERE #{timeNow} > start_time
+        WHERE #{timeNow} > timestamp
+          AND isfull = 1
+          AND ob = 0
     </delete>
 </mapper>
