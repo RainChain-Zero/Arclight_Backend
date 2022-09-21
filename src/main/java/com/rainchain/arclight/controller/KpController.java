@@ -1,6 +1,7 @@
 package com.rainchain.arclight.controller;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.rainchain.arclight.component.DeleteInfo;
 import com.rainchain.arclight.entity.Game;
@@ -50,7 +51,8 @@ public class KpController {
         }
         Game gameOld = gameSearch.get(0);
 
-        if (gameOld.getKp_qq().compareTo(game.getKp_qq()) != 0) {
+        String kp_qq = game.getKp_qq();
+        if (StrUtil.isBlank(kp_qq) || gameOld.getKp_qq().compareTo(kp_qq) != 0) {
             throw new OperationFailException("只有主持人才能修改该团信息");
         }
         Game gameNew = gameOld.updateGame(game);

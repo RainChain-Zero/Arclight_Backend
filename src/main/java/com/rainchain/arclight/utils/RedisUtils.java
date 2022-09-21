@@ -68,9 +68,10 @@ public class RedisUtils {
         } else {
             redisTemplate.opsForHash().increment("ip", ipAddress, 1);
         }
+        Integer registerLimit = (Integer) redisTemplate.opsForValue().get("register_limit");
         Object times = redisTemplate.opsForHash().get("ip", ipAddress);
-        if (times != null && (Integer) times > 10) {
-            throw new OperationFailException("同一ip下最多注册10个账号");
+        if (times != null && (Integer) times > (registerLimit == null ? 3 : registerLimit)) {
+            throw new OperationFailException("同一ip下最多注册" + registerLimit + "个账号");
         }
         return true;
     }

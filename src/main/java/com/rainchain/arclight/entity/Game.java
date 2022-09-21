@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.mybatis.PlayersListTypeHandler;
+import com.rainchain.arclight.utils.TimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -77,15 +78,33 @@ public class Game {
     private String des;
 
     //时间戳
-    private Long timestamp = new Date().getTime();
+    private Long timestamp = new Date().getTime() / 1000;
 
     private final String update_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
+    //获取更新后的团本信息
     public Game updateGame(Game gameNew) {
+        Game gameNow = new Game();
+        gameNow.id = this.id;
+        gameNow.title = gameNew.title == null ? this.title : gameNew.title;
+        gameNow.kp_name = gameNew.kp_name == null ? this.kp_name : gameNew.kp_name;
+        gameNow.kp_qq = gameNew.kp_qq == null ? this.kp_qq : gameNew.kp_qq;
+        gameNow.groups = gameNew.groups == null ? this.groups : gameNew.groups;
+        gameNow.start_time = gameNew.start_time == null ? this.start_time : gameNew.start_time;
+        gameNow.last_time = gameNew.last_time == null ? this.last_time : gameNew.last_time;
+        gameNow.last_timeh = TimeUtils.convertToTimeH(gameNow.last_time);
+        gameNow.minper = gameNew.minper == null ? this.minper : gameNew.minper;
+        gameNow.maxper = gameNew.maxper == null ? this.maxper : gameNew.maxper;
+        gameNow.isfull = gameNew.isfull;
+        gameNow.ob = gameNew.ob;
+        gameNow.tags = gameNew.tags == null ? this.tags : gameNew.tags;
+        gameNow.skills = gameNew.skills == null ? this.skills : gameNew.skills;
+        gameNow.tips = gameNew.tips == null ? this.tips : gameNew.tips;
+        gameNow.des = gameNew.des == null ? this.des : gameNew.des;
         //不能通过updata修改参团玩家
-        gameNew.players = this.players;
+        gameNow.players = this.players;
         //对限定群groups去重
-        gameNew.groups = CollUtil.distinct(gameNew.groups);
-        return gameNew;
+        gameNow.groups = CollUtil.distinct(gameNow.groups);
+        return gameNow;
     }
 }
