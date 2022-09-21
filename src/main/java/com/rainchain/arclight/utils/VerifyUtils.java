@@ -2,6 +2,7 @@ package com.rainchain.arclight.utils;
 
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.rainchain.arclight.component.JoinOrQuitInfo;
 import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.entity.Game;
@@ -95,8 +96,8 @@ public class VerifyUtils {
         if (game.getKp_qq().length() < 5 || game.getKp_qq().length() > 10) {
             throw new OperationFailException("QQ号非法！");
         }
-        if (!Pattern.compile("\\d{4}-\\d{2}-\\d{2}").matcher(game.getStart_time()).find()) {
-            throw new OperationFailException("开团日期格式错误！");
+        if (StrUtil.isBlank(game.getStart_time())) {
+            throw new OperationFailException("开团时间不能为空！");
         }
         if (game.getLast_timeh() != null) {
             throw new OperationFailException("不可以对last_timeh参数赋值");
