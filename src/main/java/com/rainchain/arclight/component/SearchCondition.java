@@ -13,9 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Pattern;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -37,15 +35,12 @@ public class SearchCondition {
 
     private String title;
 
-    private String data_now = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
-    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "开团日期格式错误")
-    //默认30天后
-    private String start_time;
-
     @Pattern(regexp = "\\d{1,3}[hd]", message = "团时长格式错误")
     private String last_time;
 
+    //默认为false
+    private boolean isfull = false;
+    
     //小时制的持续时间
     private String last_timeh;
 

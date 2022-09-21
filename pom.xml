@@ -78,8 +78,7 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
             <version>5.8.4</version>
-        </dependency>
-        <!-- Thanks for using https://jar-download.com -->
+        </dependency
 
     </dependencies>
 

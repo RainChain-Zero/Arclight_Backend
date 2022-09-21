@@ -58,9 +58,14 @@
                             <if test="last_timeh!=null">
                                 AND #{last_timeh} >= last_timeh
                             </if>
-                            <if test="start_time!=null">
-                                AND #{start_time} >= start_time
-                            </if>
+                            <choose>
+                                <when test="isfull==true">
+                                    AND isfull = 1
+                                </when>
+                                <otherwise>
+                                    AND isfull = 0
+                                </otherwise>
+                            </choose>
                             <if test="minper!=null">
                                 AND minper >= ${minper}
                             </if>

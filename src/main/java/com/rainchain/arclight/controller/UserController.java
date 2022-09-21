@@ -31,12 +31,6 @@ public class UserController {
             VerifyUtils.qqVerify(qq);
         }
 
-//        //校验开团时间
-//        String start_time = searchCondition.getStart_time();
-//        if (!StrUtil.isBlank(start_time) && searchCondition.getData_now().compareTo(start_time) > 0) {
-//            throw new OperationFailException("指定日期不能早于当日");
-//        }
-
         return userService.searchGames(searchCondition);
     }
 

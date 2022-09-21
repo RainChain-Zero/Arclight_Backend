@@ -11,7 +11,7 @@
         INSERT INTO games_now (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
                                isfull,
                                tags,
-                               skills, tips, des)
+                               skills, tips, des, timestamp)
         VALUES (#{title},
                 #{kp_name},
                 #{kp_qq},
@@ -25,63 +25,126 @@
                 #{tags},
                 #{skills},
                 #{tips},
-                #{des});
+                #{des},
+                #{timestamp});
         INSERT INTO games_all (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
                                isfull,
                                tags,
-                               skills, tips, des)
+                               skills, tips, des, timestamp)
         VALUES (#{title}, #{kp_name}, #{kp_qq},
                 #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
                 #{start_time}, #{last_time}, #{last_timeh}, #{minper},
                 #{maxper},
-                #{isfull}, #{tags}, #{skills}, #{tips}, #{des});
+                #{isfull}, #{tags}, #{skills}, #{tips}, #{des}, #{timestamp});
     </insert>
     <update id="updateGame">
         UPDATE games_now
-        SET title=#{title},
-            kp_name=#{kp_name},
-            kp_qq=#{kp_qq},
-            groups=#{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
-            start_time=#{start_time},
-            last_time=#{last_time},
-            last_timeh=#{last_timeh},
-            minper = #{minper},
-            maxper=#{maxper},
-            isfull=#{isfull},
-            tags=#{tags},
-            skills=#{skills},
-            tips=#{tips},
-            des=#{des}
-        WHERE kp_qq = #{kp_qq}
-          AND id = ${id};
-        UPDATE games_all
-        SET title=#{title},
-            kp_name=#{kp_name},
-            kp_qq=#{kp_qq},
-            groups=#{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
-            start_time=#{start_time},
-            last_time=#{last_time},
-            last_timeh=#{last_timeh},
-            minper = #{minper},
-            maxper=#{maxper},
-            isfull=#{isfull},
-            tags=#{tags},
-            skills=#{skills},
-            tips=#{tips},
-            des=#{des}
-        WHERE id = ${id};
-        INSERT INTO games_update (id, title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper,
-                                  maxper,
-                                  isfull,
-                                  tags, skills, tips
-            , des, update_time)
-        VALUES (#{id}, #{title}, #{kp_name}, #{kp_qq},
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="kp_name != null">
+                kp_name = #{kp_name},
+            </if>
+            <if test="kp_qq != null">
+                kp_qq = #{kp_qq},
+            </if>
+            <if test="groups != null">
+                groups =
                 #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
-                #{start_time}, #{last_time}, #{last_timeh},
-                #{minper},
-                #{maxper},
-                #{isfull}, #{tags}, #{skills}, #{tips},
-                #{des}, #{update_time});
+            </if>
+            <if test="start_time != null">
+                start_time = #{start_time},
+            </if>
+            <if test="last_time != null">
+                last_time = #{last_time},
+            </if>
+            <if test="last_timeh != null">
+                last_timeh = #{last_timeh},
+            </if>
+            <if test="minper != null">
+                minper = #{minper},
+            </if>
+            <if test="maxper != null">
+                maxper = #{maxper},
+            </if>
+            isfull = #{isfull},
+            <if test="tags != null">
+                tags = #{tags},
+            </if>
+            <if test="skills != null">
+                skills = #{skills},
+            </if>
+            <if test="tips != null">
+                tips = #{tips},
+            </if>
+            <if test="des != null">
+                des = #{des},
+            </if>
+            timestamp = #{timestamp}
+        </set>
+        WHERE kp_qq = #{kp_qq}
+        AND id = ${id};
+
+        UPDATE games_all
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="kp_name != null">
+                kp_name = #{kp_name},
+            </if>
+            <if test="kp_qq != null">
+                kp_qq = #{kp_qq},
+            </if>
+            <if test="groups != null">
+                groups =
+                #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
+            </if>
+            <if test="start_time != null">
+                start_time = #{start_time},
+            </if>
+            <if test="last_time != null">
+                last_time = #{last_time},
+            </if>
+            <if test="last_timeh != null">
+                last_timeh = #{last_timeh},
+            </if>
+            <if test="minper != null">
+                minper = #{minper},
+            </if>
+            <if test="maxper != null">
+                maxper = #{maxper},
+            </if>
+            isfull = #{isfull},
+            <if test="tags != null">
+                tags = #{tags},
+            </if>
+            <if test="skills != null">
+                skills = #{skills},
+            </if>
+            <if test="tips != null">
+                tips = #{tips},
+            </if>
+            <if test="des != null">
+                des = #{des},
+            </if>
+            timestamp = #{timestamp}
+        </set>
+        WHERE id = ${id} AND kp_qq = #{kp_qq};
+
+        INSERT INTO games_update (id, title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper,
+        maxper,
+        isfull,
+        tags, skills, tips
+        , des, update_time)
+        VALUES (#{id}, #{title}, #{kp_name}, #{kp_qq},
+        #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
+        #{start_time}, #{last_time}, #{last_timeh},
+        #{minper},
+        #{maxper},
+        #{isfull}, #{tags}, #{skills}, #{tips},
+        #{des}, #{update_time});
     </update>
     <delete id="deleteGame">
         DELETE
