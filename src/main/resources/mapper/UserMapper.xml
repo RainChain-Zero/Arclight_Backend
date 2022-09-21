@@ -63,9 +63,19 @@
                                     AND isfull = 1
                                 </when>
                                 <otherwise>
-                                    AND isfull = 0
+                                    AND (isfull = 0 OR ob = 1)
                                 </otherwise>
                             </choose>
+                            <if test="ob!=null">
+                                <choose>
+                                    <when test="ob==true">
+                                        AND ob = 1
+                                    </when>
+                                    <otherwise>
+                                        AND ob = 0
+                                    </otherwise>
+                                </choose>
+                            </if>
                             <if test="minper!=null">
                                 AND minper >= ${minper}
                             </if>

@@ -40,7 +40,9 @@ public class SearchCondition {
 
     //默认为false
     private boolean isfull = false;
-    
+
+    private Boolean ob;
+
     //小时制的持续时间
     private String last_timeh;
 

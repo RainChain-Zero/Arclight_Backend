@@ -9,7 +9,7 @@
     </select>
     <insert id="addGame" parameterType="com.rainchain.arclight.entity.Game" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO games_now (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
-                               isfull,
+                               isfull, ob,
                                tags,
                                skills, tips, des, timestamp)
         VALUES (#{title},
@@ -22,20 +22,22 @@
                 #{minper},
                 #{maxper},
                 #{isfull},
+                #{ob},
                 #{tags},
                 #{skills},
                 #{tips},
                 #{des},
                 #{timestamp});
+
         INSERT INTO games_all (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
-                               isfull,
+                               isfull, ob,
                                tags,
                                skills, tips, des, timestamp)
         VALUES (#{title}, #{kp_name}, #{kp_qq},
                 #{groups,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler},
                 #{start_time}, #{last_time}, #{last_timeh}, #{minper},
                 #{maxper},
-                #{isfull}, #{tags}, #{skills}, #{tips}, #{des}, #{timestamp});
+                #{isfull}, #{ob}, #{tags}, #{skills}, #{tips}, #{des}, #{timestamp});
     </insert>
     <update id="updateGame">
         UPDATE games_now
@@ -69,6 +71,7 @@
                 maxper = #{maxper},
             </if>
             isfull = #{isfull},
+            ob = #{ob},
             <if test="tags != null">
                 tags = #{tags},
             </if>
@@ -117,6 +120,7 @@
                 maxper = #{maxper},
             </if>
             isfull = #{isfull},
+            ob = #{ob},
             <if test="tags != null">
                 tags = #{tags},
             </if>
@@ -135,7 +139,7 @@
 
         INSERT INTO games_update (id, title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper,
         maxper,
-        isfull,
+        isfull,ob,
         tags, skills, tips
         , des, update_time)
         VALUES (#{id}, #{title}, #{kp_name}, #{kp_qq},
@@ -143,7 +147,7 @@
         #{start_time}, #{last_time}, #{last_timeh},
         #{minper},
         #{maxper},
-        #{isfull}, #{tags}, #{skills}, #{tips},
+        #{isfull},#{ob}, #{tags}, #{skills}, #{tips},
         #{des}, #{update_time});
     </update>
     <delete id="deleteGame">

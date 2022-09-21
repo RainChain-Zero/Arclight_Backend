@@ -8,9 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.mybatis.PlayersListTypeHandler;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Component;
@@ -23,12 +22,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-@JsonIgnoreProperties(value = {"update_time"})
+@JsonIgnoreProperties(value = {"update_time", "timestamp"})
 @TableName(autoResultMap = true)
 public class Game {
     @Null(message = "不可以对id参数赋值")
@@ -52,7 +50,6 @@ public class Game {
     @NotBlank(message = "开团时间不能为空")
     private String start_time;
 
-
     @Pattern(regexp = "\\d+[hd]", message = "团时长格式错误")
     private String last_time;
 
@@ -67,6 +64,8 @@ public class Game {
 
     //默认为false
     private boolean isfull = false;
+    //是否允许ob，默认为false
+    private boolean ob = false;
 
     @NotBlank(message = "团标签不能为空")
     private String tags;
