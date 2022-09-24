@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Slf4j
@@ -19,8 +18,11 @@ public class ScheduleConfigurer {
 
     @Scheduled(cron = "0 0 4 * * ?")
     public void cleanGames() {
+        long timeNow = new Date().getTime() / 1000;
         //满人且不收ob的团，过期7天后从即时团本中删除
-        cleanMapper.cleanGames(new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime() / 1000 - 7 * 24 * 60 * 60L));
+        cleanMapper.cleanGames(timeNow - 7 * 24 * 60 * 60L);
+        //清理过期且已被处理的的申请
+        cleanMapper.cleanApplication(timeNow - 7 * 24 * 60 * 60L);
     }
 
 }
