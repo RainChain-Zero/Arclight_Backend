@@ -5,7 +5,6 @@ import com.rainchain.arclight.component.JoinOrQuitInfo;
 import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
-import com.rainchain.arclight.entity.JoinOrQuitInfoDB;
 import com.rainchain.arclight.entity.KpApproval;
 import com.rainchain.arclight.entity.ParticipatingGames;
 import com.rainchain.arclight.mapper.UserMapper;
@@ -83,31 +82,25 @@ public class UserService {
         List<Long> ids = joinOrQuitInfo.getIds();
 
         List<Game> games = userMapper.searchIdsGames(ids);
-        JoinOrQuitInfoDB joinOrQuitInfoDB = new JoinOrQuitInfoDB();
         for (Long id : ids) {
-            joinOrQuitInfoDB.setId(id);
-            Game game = userMapper.searchIdGame(id);
-            if (null == game) {
+            Game game = new Game();
+            game.setId(id);
+            int index = games.indexOf(game);
+            if (-1 == index) {
                 res.add(false);
                 continue;
             }
+            game = games.get(index);
             //提取对应团原先的玩家列表
             List<Player> playerList = game.getPlayers();
-            if (CollUtil.isEmpty(playerList)) {
-                res.add(false);
-                continue;
-            }
-            int length = playerList.size();
-            //从玩家列表中删除对应玩家
-            playerList = CollUtil.filter(playerList, player -> !player.getQq().equals(playerQQ));
-            if (playerList.size() < length) {
-                joinOrQuitInfoDB.setPlayers(playerList);
-                //! userMapper.joinOrQuitGames(joinOrQuitInfoDB);
-                res.add(true);
-            } else {
-                res.add(false);
-            }
+            //从现有玩家列表中删除该玩家
+            CollUtil.removeAny(playerList, new Player(null, playerQQ));
+            //更新数据库
+            userMapper.quitGamesNow(id, playerList);
+            res.add(true);
         }
+        //移除在申请列表中的玩家
+        userMapper.quitGamesApplication(ids, playerQQ);
         return res;
     }
 

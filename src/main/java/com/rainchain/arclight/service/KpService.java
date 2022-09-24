@@ -4,9 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import com.rainchain.arclight.component.AcceptOrRefuseInfo;
 import com.rainchain.arclight.component.DeleteInfo;
 import com.rainchain.arclight.component.Player;
+import com.rainchain.arclight.component.RemoveInfo;
 import com.rainchain.arclight.entity.AuditResult;
 import com.rainchain.arclight.entity.Game;
-import com.rainchain.arclight.entity.InviteOrRemoveInfo;
 import com.rainchain.arclight.entity.KpApproval;
 import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.mapper.KpMapper;
@@ -67,71 +67,25 @@ public class KpService {
         return res;
     }
 
-    public List<Boolean> invitePlayers(InviteOrRemoveInfo inviteOrRemoveInfo) {
-        //函数返回列表
-        List<Boolean> res = new ArrayList<>();
-        //待邀请的玩家列表
-        List<Player> players = inviteOrRemoveInfo.getPlayers();
-        //查询id对应的团
-        Game game = userMapper.searchIdGame(inviteOrRemoveInfo.getId());
-        if (null == game) {
-            throw new OperationFailException("找不到指定id的团");
-        }
-        if (!game.getKp_qq().equals(inviteOrRemoveInfo.getKp_qq())) {
-            throw new OperationFailException("你不是该团的主持人");
-        }
-        //当前玩家列表
-        List<Player> playerList = game.getPlayers();
-        //最终写入数据库的玩家列表
-        List<Player> playerFianl = new ArrayList<>(playerList);
-        for (Player playerNow : players) {
-            boolean flag = true;
-            for (Player playerOri : playerList) {
-                if (playerOri.getQq().equals(playerNow.getQq())) {
-                    res.add(false);
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                playerFianl.add(playerNow);
-                res.add(true);
-            }
-        }
-        inviteOrRemoveInfo.setPlayers(playerFianl);
-        kpMapper.inviteOrRemovePlayers(inviteOrRemoveInfo);
-
-        return res;
-    }
-
-    public List<Boolean> removePlayers(InviteOrRemoveInfo inviteOrRemoveInfo) {
-        //函数返回列表
-        List<Boolean> res = new ArrayList<>();
+    //从已正式加入的玩家中移除
+    public void removePlayers(RemoveInfo RemoveInfo) {
         //待移除的玩家列表
-        List<Player> players = inviteOrRemoveInfo.getPlayers();
+        List<String> qqs = RemoveInfo.getQqs();
         //查询id对应的团
-        Game game = userMapper.searchIdGame(inviteOrRemoveInfo.getId());
+        Game game = userMapper.searchIdGame(RemoveInfo.getId());
         if (null == game) {
             throw new OperationFailException("找不到指定id的团");
         }
-        if (!game.getKp_qq().equals(inviteOrRemoveInfo.getKp_qq())) {
+        if (!game.getKp_qq().equals(RemoveInfo.getKp_qq())) {
             throw new OperationFailException("你不是该团的主持人");
         }
         //当前玩家列表
         List<Player> playerList = game.getPlayers();
 
-        for (Player playerNow : players) {
-            int length = playerList.size();
-            CollUtil.filter(playerList, player -> !player.getQq().equals(playerNow.getQq()));
-            if (playerList.size() < length) {
-                res.add(true);
-            } else {
-                res.add(false);
-            }
-        }
-        inviteOrRemoveInfo.setPlayers(playerList);
-        kpMapper.inviteOrRemovePlayers(inviteOrRemoveInfo);
-        return res;
+        //移除玩家
+        playerList.removeIf(player -> qqs.contains(player.getQq()));
+
+        kpMapper.removePlayers(RemoveInfo.getId(), playerList);
     }
 
     public List<Boolean> acceptPlayers(AcceptOrRefuseInfo acceptOrRefuseInfo) {
@@ -155,11 +109,13 @@ public class KpService {
             KpApproval kpApproval = new KpApproval();
             kpApproval.setQq(qq);
             kpApproval.setId(acceptOrRefuseInfo.getId());
+            int index = kpApprovals.indexOf(kpApproval);
             //若玩家不在申请列表中
-            if (!CollUtil.contains(kpApprovals, kpApproval)) {
+            if (-1 == index) {
                 res.add(false);
                 return;
             }
+            kpApproval = kpApprovals.get(index);
             Player playerNew = new Player(kpApproval.getNick(), qq);
             playersNew.add(playerNew);
             res.add(true);

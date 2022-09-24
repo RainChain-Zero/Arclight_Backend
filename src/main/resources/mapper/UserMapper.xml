@@ -27,6 +27,28 @@
         <result property="des" column="des"/>
     </resultMap>
 
+    <update id="quitGamesNow">
+        UPDATE games_now
+        SET players=#{players,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler}
+        WHERE id = ${id}
+    </update>
+
+    <delete id="quitGamesApplication">
+        DELETE FROM kp_approval
+        WHERE qq = #{qq}
+        AND id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            ${id}
+        </foreach>;
+
+        DELETE FROM pl_application
+        WHERE qq = #{qq}
+        AND id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            ${id}
+        </foreach>;
+    </delete>
+
     <select id="searchIdGame" resultMap="searchGame">
         SELECT *
         FROM games_now
@@ -96,12 +118,6 @@
         </where>
         ORDER BY start_time LIMIT ${maxnum}
     </select>
-
-    <!--    <update id="joinOrQuitGames">-->
-    <!--        UPDATE games_now-->
-    <!--        SET players=#{players,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler}-->
-    <!--        WHERE id = ${id}-->
-    <!--    </update>-->
 
     <select id="getParticipatingGames" resultType="com.rainchain.arclight.entity.ParticipatingGames">
         SELECT *

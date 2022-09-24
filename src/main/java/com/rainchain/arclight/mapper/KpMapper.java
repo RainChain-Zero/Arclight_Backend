@@ -4,7 +4,6 @@ package com.rainchain.arclight.mapper;
 import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.entity.AuditResult;
 import com.rainchain.arclight.entity.Game;
-import com.rainchain.arclight.entity.InviteOrRemoveInfo;
 import com.rainchain.arclight.entity.KpApproval;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,7 +24,7 @@ public interface KpMapper {
 
     void addDeleteInfo(Long id, String info);
 
-    void inviteOrRemovePlayers(InviteOrRemoveInfo inviteOrRemoveInfo);
+    void removePlayers(@Param("id") Long id, @Param("players") List<Player> players);
 
     List<KpApproval> getPlApplication(@Param("id") Long id, @Param("qqs") List<String> qqs);
 

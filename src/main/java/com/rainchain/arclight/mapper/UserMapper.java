@@ -1,5 +1,6 @@
 package com.rainchain.arclight.mapper;
 
+import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.KpApproval;
@@ -20,10 +21,11 @@ public interface UserMapper {
 
     List<Game> searchGames(SearchCondition searchCondition);
 
-    //加入或退出团
-    //void joinOrQuitGames(JoinOrQuitInfoDB joinOrQuitInfoDB);
-
     List<ParticipatingGames> getParticipatingGames(String qq);
 
     void joinGames(@Param("kpApproval") KpApproval kpApproval, @Param("title") String title);
+
+    void quitGamesNow(@Param("id") Long id, @Param("players") List<Player> players);
+
+    void quitGamesApplication(@Param("ids") List<Long> ids, @Param("qq") String qq);
 }

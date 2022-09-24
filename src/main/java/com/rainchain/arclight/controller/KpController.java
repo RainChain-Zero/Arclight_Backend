@@ -4,8 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.rainchain.arclight.component.AcceptOrRefuseInfo;
 import com.rainchain.arclight.component.DeleteInfo;
+import com.rainchain.arclight.component.RemoveInfo;
 import com.rainchain.arclight.entity.Game;
-import com.rainchain.arclight.entity.InviteOrRemoveInfo;
 import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.service.KpService;
 import com.rainchain.arclight.service.UserService;
@@ -66,18 +66,10 @@ public class KpController {
         return kpService.deleteGame(deleteInfo, key);
     }
 
-    @PostMapping("/invite")
-    public List<Boolean> invitePlayers(HttpServletRequest request) throws IOException {
-        String content = EncodingUtils.charReader(request);
-        InviteOrRemoveInfo inviteOrRemoveInfo = JSON.parseObject(content, InviteOrRemoveInfo.class);
-        VerifyUtils.verifyInviteOrRemoveInfo(inviteOrRemoveInfo);
-        return kpService.invitePlayers(inviteOrRemoveInfo);
-    }
-
     @PostMapping("/remove")
-    public List<Boolean> removePlayers(@RequestBody @Validated InviteOrRemoveInfo inviteOrRemoveInfo) {
-        VerifyUtils.verifyInviteOrRemoveInfo(inviteOrRemoveInfo);
-        return kpService.removePlayers(inviteOrRemoveInfo);
+    public void removePlayers(@RequestBody @Validated RemoveInfo RemoveInfo) {
+        VerifyUtils.verifyRemoveInfo(RemoveInfo);
+        kpService.removePlayers(RemoveInfo);
     }
 
     //接受pl的入团申请

@@ -120,7 +120,7 @@
         VALUES (#{title}, #{kp_qq}, #{deleteTime}, #{des}, #{Label}, #{Keywords})
     </insert>
 
-    <update id="inviteOrRemovePlayers">
+    <update id="removePlayers">
         UPDATE games_now
         SET players=
         <choose>

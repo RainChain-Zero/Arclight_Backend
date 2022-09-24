@@ -6,8 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import com.rainchain.arclight.component.AcceptOrRefuseInfo;
 import com.rainchain.arclight.component.JoinOrQuitInfo;
 import com.rainchain.arclight.component.Player;
+import com.rainchain.arclight.component.RemoveInfo;
 import com.rainchain.arclight.entity.Game;
-import com.rainchain.arclight.entity.InviteOrRemoveInfo;
 import com.rainchain.arclight.exception.OperationFailException;
 
 import java.util.List;
@@ -71,16 +71,14 @@ public class VerifyUtils {
         }
     }
 
-    public static void verifyInviteOrRemoveInfo(InviteOrRemoveInfo inviteOrRemoveInfo) {
-        if (null == inviteOrRemoveInfo.getId()) {
+    public static void verifyRemoveInfo(RemoveInfo RemoveInfo) {
+        if (null == RemoveInfo.getId()) {
             throw new OperationFailException("缺少必要的id参数");
         }
-        VerifyUtils.qqVerify(inviteOrRemoveInfo.getKp_qq());
-        List<Player> players = inviteOrRemoveInfo.getPlayers();
-        if (!CollUtil.isEmpty(players)) {
-            players.forEach(player -> {
-                VerifyUtils.qqVerify(player.getQq());
-            });
+        VerifyUtils.qqVerify(RemoveInfo.getKp_qq());
+        List<String> qqs = RemoveInfo.getQqs();
+        if (!CollUtil.isEmpty(qqs)) {
+            qqs.forEach(VerifyUtils::qqVerify);
         } else {
             throw new OperationFailException("缺少玩家信息");
         }
