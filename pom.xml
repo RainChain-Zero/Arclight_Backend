@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.rainchain</groupId>
     <artifactId>arclight</artifactId>
-    <version>1.0.0-Beta</version>
+    <version>2.0.0-Beta</version>
     <name>Arclight</name>
     <description>Arclight</description>
     <properties>
@@ -78,7 +78,7 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
             <version>5.8.4</version>
-        </dependency
+        </dependency>
 
     </dependencies>
 

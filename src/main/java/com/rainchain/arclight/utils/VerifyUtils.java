@@ -3,10 +3,7 @@ package com.rainchain.arclight.utils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.rainchain.arclight.component.AcceptOrRefuseInfo;
-import com.rainchain.arclight.component.JoinOrQuitInfo;
-import com.rainchain.arclight.component.Player;
-import com.rainchain.arclight.component.RemoveInfo;
+import com.rainchain.arclight.component.*;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.exception.OperationFailException;
 
@@ -55,7 +52,7 @@ public class VerifyUtils {
     }
 
     //校验JoinOrQuitInfo
-    public static void verifyJoinOrQuitInfo(JoinOrQuitInfo joinOrQuitInfo) {
+    public static void verifyJoinInfo(JoinInfo joinOrQuitInfo) {
         List<Long> ids = joinOrQuitInfo.getIds();
         Player player = joinOrQuitInfo.getPlayer();
         if (CollUtil.isEmpty(ids) || ids.size() > 10) {
@@ -69,6 +66,14 @@ public class VerifyUtils {
         if (ids.size() > 1 && StrUtil.isNotBlank(joinOrQuitInfo.getMsg())) {
             throw new OperationFailException("批量加入时不可填入入团附加信息");
         }
+    }
+
+    public static void verifyQuitInfo(QuitInfo quitInfo) {
+        List<Long> ids = quitInfo.getIds();
+        if (CollUtil.isEmpty(ids) || ids.size() > 10) {
+            throw new OperationFailException("id列表长度不合法！");
+        }
+        VerifyUtils.qqVerify(quitInfo.getQq());
     }
 
     public static void verifyRemoveInfo(RemoveInfo RemoveInfo) {

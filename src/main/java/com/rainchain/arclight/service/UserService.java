@@ -1,8 +1,9 @@
 package com.rainchain.arclight.service;
 
 import cn.hutool.core.collection.CollUtil;
-import com.rainchain.arclight.component.JoinOrQuitInfo;
+import com.rainchain.arclight.component.JoinInfo;
 import com.rainchain.arclight.component.Player;
+import com.rainchain.arclight.component.QuitInfo;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.KpApproval;
@@ -40,10 +41,10 @@ public class UserService {
     }
 
     //申请加入团
-    public List<Boolean> joinGames(JoinOrQuitInfo joinOrQuitInfo) {
-        Player player = joinOrQuitInfo.getPlayer();
+    public List<Boolean> joinGames(JoinInfo joinInfo) {
+        Player player = joinInfo.getPlayer();
         String playerQQ = player.getQq();
-        List<Long> ids = joinOrQuitInfo.getIds();
+        List<Long> ids = joinInfo.getIds();
         List<Boolean> res = new ArrayList<>();
         //获取所有游戏列表
         List<Game> games = userMapper.searchIdsGames(ids);
@@ -66,7 +67,7 @@ public class UserService {
                 continue;
             }
             KpApproval kpApproval = new KpApproval(id, playerQQ, game.getTitle(), game.getKp_qq(),
-                    player.getNick(), joinOrQuitInfo.getMsg());
+                    player.getNick(), joinInfo.getMsg());
             //写入数据库
             userMapper.joinGames(kpApproval);
             res.add(true);
@@ -75,10 +76,10 @@ public class UserService {
     }
 
     //退出团,一并退出申请列表和已经通过的玩家列表
-    public List<Boolean> quitGames(JoinOrQuitInfo joinOrQuitInfo) {
-        String playerQQ = joinOrQuitInfo.getPlayer().getQq();
+    public List<Boolean> quitGames(QuitInfo quitInfo) {
+        String playerQQ = quitInfo.getQq();
         List<Boolean> res = new ArrayList<>();
-        List<Long> ids = joinOrQuitInfo.getIds();
+        List<Long> ids = quitInfo.getIds();
 
         List<Game> games = userMapper.searchIdsGames(ids);
         for (Long id : ids) {

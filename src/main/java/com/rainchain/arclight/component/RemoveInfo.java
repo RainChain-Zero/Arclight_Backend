@@ -18,10 +18,10 @@ import java.util.List;
 public class RemoveInfo {
     @Digits(message = "id必须为非负整数", integer = 2147483647, fraction = 0)
     private Long id;
-    
+
     @Length(min = 5, max = 10, message = "主持人QQ号非法！")
     private String kp_qq;
 
     @Valid
-    private List<@Length(min = 5, max = 10, message = "主持人QQ号非法！") String> qqs;
+    private List<@Length(min = 5, max = 10, message = "玩家QQ号非法！") String> qqs;
 }

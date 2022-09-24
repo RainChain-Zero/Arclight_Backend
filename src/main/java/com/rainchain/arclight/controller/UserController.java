@@ -2,7 +2,8 @@ package com.rainchain.arclight.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
-import com.rainchain.arclight.component.JoinOrQuitInfo;
+import com.rainchain.arclight.component.JoinInfo;
+import com.rainchain.arclight.component.QuitInfo;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.PlApplication;
@@ -41,18 +42,18 @@ public class UserController {
     @PostMapping("/join")
     public List<Boolean> joinGames(HttpServletRequest request) throws IOException {
         String content = EncodingUtils.charReader(request);
-        JoinOrQuitInfo joinOrQuitInfo = JSON.parseObject(content, JoinOrQuitInfo.class);
+        JoinInfo joinInfo = JSON.parseObject(content, JoinInfo.class);
         //参数校验
-        VerifyUtils.verifyJoinOrQuitInfo(joinOrQuitInfo);
+        VerifyUtils.verifyJoinInfo(joinInfo);
 
-        return userService.joinGames(joinOrQuitInfo);
+        return userService.joinGames(joinInfo);
     }
 
     //退出团
     @PostMapping("/quit")
-    public List<Boolean> quitGames(@Validated @RequestBody JoinOrQuitInfo joinOrQuitInfo) {
-        VerifyUtils.verifyJoinOrQuitInfo(joinOrQuitInfo);
-        return userService.quitGames(joinOrQuitInfo);
+    public List<Boolean> quitGames(@Validated @RequestBody QuitInfo quitInfo) {
+        VerifyUtils.verifyQuitInfo(quitInfo);
+        return userService.quitGames(quitInfo);
     }
 
     @GetMapping("/getApplication")

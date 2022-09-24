@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-public class JoinOrQuitInfo {
+public class JoinInfo {
     @Valid
     private List<@Digits(message = "id必须为非负整数", integer = 2147483647, fraction = 0) Long> ids;
 
