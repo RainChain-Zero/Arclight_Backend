@@ -14,7 +14,6 @@ import java.util.List;
 @Mapper
 @Repository
 public interface KpMapper {
-    int nameCheck(Game game);
 
     void addGame(Game game);
 

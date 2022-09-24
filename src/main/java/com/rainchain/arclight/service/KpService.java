@@ -31,9 +31,6 @@ public class KpService {
     public Long addGame(Game game) {
         //统一持续时间单位
         game.setLast_timeh(TimeUtils.convertToTimeH(game.getLast_time()));
-        if (kpMapper.nameCheck(game) > 0) {
-            throw new OperationFailException("你已经有同名的团了");
-        }
         kpMapper.addGame(game);
         return game.getId();
     }
