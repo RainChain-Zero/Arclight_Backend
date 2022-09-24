@@ -131,6 +131,9 @@
                 '[]'
             </otherwise>
         </choose>
+        ,
+        timestamp = #{timestamp},
+        isfull = #{isfull}
         WHERE id = ${id}
     </update>
 
@@ -145,6 +148,9 @@
                 '[]'
             </otherwise>
         </choose>
+        ,
+        isfull = #{isfull},
+        timestamp = #{timestamp}
         WHERE id = ${id};
 
         DELETE FROM kp_approval

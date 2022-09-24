@@ -24,12 +24,13 @@ public interface KpMapper {
 
     void addDeleteInfo(Long id, String info);
 
-    void removePlayers(@Param("id") Long id, @Param("players") List<Player> players);
+    void removePlayers(@Param("id") Long id, @Param("players") List<Player> players,
+                       @Param("isfull") boolean isfull, @Param("timestamp") Long timestamp);
 
     List<KpApproval> getPlApplication(@Param("id") Long id, @Param("qqs") List<String> qqs);
 
     void acceptPlayers(@Param("id") Long id, @Param("qqs") List<String> qqs, @Param("playersDb") List<Player> playersDb,
-                       @Param("timestamp") Long timestamp);
+                       @Param("isfull") boolean isfull, @Param("timestamp") Long timestamp);
 
     void refusePlayers(@Param("id") Long id, @Param("qqs") List<String> qqs, @Param("timestamp") Long timestamp);
 

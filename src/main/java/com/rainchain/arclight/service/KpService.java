@@ -85,7 +85,10 @@ public class KpService {
         //移除玩家
         playerList.removeIf(player -> qqs.contains(player.getQq()));
 
-        kpMapper.removePlayers(RemoveInfo.getId(), playerList);
+        boolean isfull = playerList.size() >= game.getMaxper();
+
+        kpMapper.removePlayers(RemoveInfo.getId(), playerList, isfull,
+                new Date().getTime() / 1000);
     }
 
     public List<Boolean> acceptPlayers(AcceptOrRefuseInfo acceptOrRefuseInfo) {
@@ -123,7 +126,10 @@ public class KpService {
         //更新玩家列表,取并集
         List<Player> playersDb = new ArrayList<>(CollUtil.union(game.getPlayers(), playersNew));
 
-        kpMapper.acceptPlayers(acceptOrRefuseInfo.getId(), qqs, playersDb, new Date().getTime() / 1000);
+        boolean isfull = playersDb.size() >= game.getMaxper();
+
+        kpMapper.acceptPlayers(acceptOrRefuseInfo.getId(), qqs, playersDb, isfull,
+                new Date().getTime() / 1000);
 
         return res;
     }
