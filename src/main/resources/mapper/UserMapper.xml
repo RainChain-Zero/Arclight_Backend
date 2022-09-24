@@ -109,7 +109,7 @@
         WHERE qq = #{qq}
     </select>
 
-    <select id="searchIdsGames" resultType="com.rainchain.arclight.entity.Game">
+    <select id="searchIdsGames" resultMap="searchGame">
         SELECT * FROM games_now WHERE id in
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             ${id}
