@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface UserMapper {
-    List<Game> searchIdGame(Long id);
+    Game searchIdGame(Long id);
 
     List<Game> searchGames(SearchCondition searchCondition);
 

@@ -1,11 +1,16 @@
 package com.rainchain.arclight.mapper;
 
 
+import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.entity.AuditResult;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.InviteOrRemoveInfo;
+import com.rainchain.arclight.entity.KpApproval;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Mapper
 @Repository
@@ -21,6 +26,13 @@ public interface KpMapper {
     void addDeleteInfo(Long id, String info);
 
     void inviteOrRemovePlayers(InviteOrRemoveInfo inviteOrRemoveInfo);
+
+    KpApproval getPlApplication(Long id, String qq);
+
+    void acceptPlayers(@Param("id") Long id, @Param("qqs") List<String> qqs, @Param("playersDb") List<Player> playersDb,
+                       @Param("timestamp") Long timestamp);
+
+    void refusePlayers(@Param("id") Long id, @Param("qqs") List<String> qqs, @Param("timestamp") Long timestamp);
 
     void addIrregularGame(AuditResult auditResult);
 }

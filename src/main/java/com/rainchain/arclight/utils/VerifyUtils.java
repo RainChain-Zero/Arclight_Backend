@@ -3,6 +3,7 @@ package com.rainchain.arclight.utils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.rainchain.arclight.component.AcceptOrRefuseInfo;
 import com.rainchain.arclight.component.JoinOrQuitInfo;
 import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.entity.Game;
@@ -83,6 +84,10 @@ public class VerifyUtils {
         } else {
             throw new OperationFailException("缺少玩家信息");
         }
+    }
+
+    public static void verifyAcceptOrRefuseInfo(AcceptOrRefuseInfo acceptOrRefuseInfo) {
+        acceptOrRefuseInfo.getQqs().forEach(VerifyUtils::qqVerify);
     }
 
     //校验game参数

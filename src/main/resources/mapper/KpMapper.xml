@@ -7,6 +7,14 @@
         WHERE title = #{title}
           AND kp_qq = #{kp_qq}
     </select>
+
+    <select id="getPlApplication" resultType="com.rainchain.arclight.entity.KpApproval">
+        SELECT *
+        FROM kp_approval
+        WHERE qq = #{qq}
+          AND id = #{id} LIMIT 1
+    </select>
+
     <insert id="addGame" parameterType="com.rainchain.arclight.entity.Game" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO games_now (title, kp_name, kp_qq, groups, start_time, last_time, last_timeh, minper, maxper,
                                isfull, ob,
@@ -120,6 +128,54 @@
                 '[]'
             </otherwise>
         </choose>
-        WHERE kp_qq = #{kp_qq} AND id = ${id}
+        WHERE id = ${id}
+    </update>
+
+    <update id="acceptPlayers">
+        UPDATE games_now
+        SET players=
+        <choose>
+            <when test="playersDb!=null and playersDb.size()>0">
+                #{playersDb,jdbcType=VARCHAR,typeHandler=com.rainchain.arclight.mybatis.PlayersListTypeHandler}
+            </when>
+            <otherwise>
+                '[]'
+            </otherwise>
+        </choose>
+        WHERE id = ${id};
+
+        DELETE FROM kp_approval
+        WHERE id = ${id}
+        AND qq in
+        <foreach collection="qqs" item="qq" open="(" separator="," close=")">
+            #{qq}
+        </foreach>;
+
+        UPDATE pl_application
+        SET status = 1,
+        timestamp = #{timestamp}
+        WHERE id = ${id}
+        AND qq in
+        <foreach collection="qqs" item="qq" open="(" separator="," close=")">
+            #{qq}
+        </foreach>;
+    </update>
+
+    <update id="refusePlayers">
+        UPDATE pl_application
+        SET status = 2,
+        timestamp = #{timestamp}
+        WHERE id = ${id}
+        AND qq in
+        <foreach collection="qqs" item="qq" open="(" separator="," close=")">
+            #{qq}
+        </foreach>;
+
+        DELETE FROM kp_approval
+        WHERE id = ${id}
+        AND qq in
+        <foreach collection="qqs" item="qq" open="(" separator="," close=")">
+            #{qq}
+        </foreach>;
     </update>
 </mapper>

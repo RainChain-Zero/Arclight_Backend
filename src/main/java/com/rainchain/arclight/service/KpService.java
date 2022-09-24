@@ -1,11 +1,13 @@
 package com.rainchain.arclight.service;
 
 import cn.hutool.core.collection.CollUtil;
+import com.rainchain.arclight.component.AcceptOrRefuseInfo;
 import com.rainchain.arclight.component.DeleteInfo;
 import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.entity.AuditResult;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.InviteOrRemoveInfo;
+import com.rainchain.arclight.entity.KpApproval;
 import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.mapper.KpMapper;
 import com.rainchain.arclight.mapper.UserMapper;
@@ -71,15 +73,15 @@ public class KpService {
         //待邀请的玩家列表
         List<Player> players = inviteOrRemoveInfo.getPlayers();
         //查询id对应的团
-        List<Game> games = userMapper.searchIdGame(inviteOrRemoveInfo.getId());
-        if (CollUtil.isEmpty(games)) {
+        Game game = userMapper.searchIdGame(inviteOrRemoveInfo.getId());
+        if (null == game) {
             throw new OperationFailException("找不到指定id的团");
         }
-        if (!games.get(0).getKp_qq().equals(inviteOrRemoveInfo.getKp_qq())) {
+        if (!game.getKp_qq().equals(inviteOrRemoveInfo.getKp_qq())) {
             throw new OperationFailException("你不是该团的主持人");
         }
         //当前玩家列表
-        List<Player> playerList = games.get(0).getPlayers();
+        List<Player> playerList = game.getPlayers();
         //最终写入数据库的玩家列表
         List<Player> playerFianl = new ArrayList<>(playerList);
         for (Player playerNow : players) {
@@ -108,21 +110,19 @@ public class KpService {
         //待移除的玩家列表
         List<Player> players = inviteOrRemoveInfo.getPlayers();
         //查询id对应的团
-        List<Game> games = userMapper.searchIdGame(inviteOrRemoveInfo.getId());
-        if (CollUtil.isEmpty(games)) {
+        Game game = userMapper.searchIdGame(inviteOrRemoveInfo.getId());
+        if (null == game) {
             throw new OperationFailException("找不到指定id的团");
         }
-        if (!games.get(0).getKp_qq().equals(inviteOrRemoveInfo.getKp_qq())) {
+        if (!game.getKp_qq().equals(inviteOrRemoveInfo.getKp_qq())) {
             throw new OperationFailException("你不是该团的主持人");
         }
         //当前玩家列表
-        List<Player> playerList = games.get(0).getPlayers();
+        List<Player> playerList = game.getPlayers();
 
         for (Player playerNow : players) {
             int length = playerList.size();
-            CollUtil.filter(playerList, player -> {
-                return !player.getQq().equals(playerNow.getQq());
-            });
+            CollUtil.filter(playerList, player -> !player.getQq().equals(playerNow.getQq()));
             if (playerList.size() < length) {
                 res.add(true);
             } else {
@@ -131,6 +131,68 @@ public class KpService {
         }
         inviteOrRemoveInfo.setPlayers(playerList);
         kpMapper.inviteOrRemovePlayers(inviteOrRemoveInfo);
+        return res;
+    }
+
+    public List<Boolean> acceptPlayers(AcceptOrRefuseInfo acceptOrRefuseInfo) {
+        //返回结果
+        List<Boolean> res = new ArrayList<>();
+        //待接受的玩家QQ列表
+        List<String> qqs = acceptOrRefuseInfo.getQqs();
+        //待处理的团本
+        Game game = userMapper.searchIdGame(acceptOrRefuseInfo.getId());
+        if (null == game) {
+            throw new OperationFailException("找不到指定id的团");
+        }
+        if (!game.getKp_qq().equals(acceptOrRefuseInfo.getKp_qq())) {
+            throw new OperationFailException("你不是该团的主持人");
+        }
+        //获取玩家列表
+        List<Player> playersNew = new ArrayList<>();
+        qqs.forEach(qq -> {
+            //通过qq查找在待评审的列表中的玩家
+            KpApproval kpApproval = kpMapper.getPlApplication(acceptOrRefuseInfo.getId(), qq);
+            if (null == kpApproval) {
+                res.add(false);
+                return;
+            }
+            Player playerNew = new Player(kpApproval.getNick(), qq);
+            playersNew.add(playerNew);
+            res.add(true);
+        });
+        //更新玩家列表,取并集
+        List<Player> playersDb = new ArrayList<>(CollUtil.union(game.getPlayers(), playersNew));
+
+        kpMapper.acceptPlayers(acceptOrRefuseInfo.getId(), qqs, playersDb, new Date().getTime() / 1000);
+
+        return res;
+    }
+
+    public List<Boolean> refusePlayers(AcceptOrRefuseInfo acceptOrRefuseInfo) {
+        //返回结果
+        List<Boolean> res = new ArrayList<>();
+        //待拒绝的玩家QQ列表
+        List<String> qqs = acceptOrRefuseInfo.getQqs();
+        //待处理的团本
+        Game game = userMapper.searchIdGame(acceptOrRefuseInfo.getId());
+        if (null == game) {
+            throw new OperationFailException("找不到指定id的团");
+        }
+        if (!game.getKp_qq().equals(acceptOrRefuseInfo.getKp_qq())) {
+            throw new OperationFailException("你不是该团的主持人");
+        }
+        qqs.forEach(qq -> {
+            //通过qq查找在待评审的列表中的玩家
+            KpApproval kpApproval = kpMapper.getPlApplication(acceptOrRefuseInfo.getId(), qq);
+            if (null == kpApproval) {
+                res.add(false);
+                return;
+            }
+            res.add(true);
+        });
+
+        kpMapper.refusePlayers(acceptOrRefuseInfo.getId(), qqs, new Date().getTime() / 1000);
+
         return res;
     }
 

@@ -21,7 +21,7 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<Game> searchIdGame(Long id) {
+    public Game searchIdGame(Long id) {
         return userMapper.searchIdGame(id);
     }
 
@@ -48,22 +48,21 @@ public class UserService {
         //对每个id单独判断是否加入成功
         for (Long id : joinOrQuitInfo.getId()) {
             //先提取id对应的团数据
-            List<Game> games = userMapper.searchIdGame(id);
+            Game game = userMapper.searchIdGame(id);
             //如果没有这个团，加入失败
-            if (CollUtil.isEmpty(games)) {
+            if (game == null) {
                 res.add(false);
                 continue;
             }
             //满人的团无法加入
             //todo 讨论加入ob如何判断
-            if (games.get(0).isIsfull()) {
+            if (game.isIsfull()) {
                 res.add(false);
                 continue;
             }
-            KpApproval kpApproval = new KpApproval(id, playerQQ, games.get(0).getKp_qq(), player.getNick(), joinOrQuitInfo.getMsg());
+            KpApproval kpApproval = new KpApproval(id, playerQQ, game.getKp_qq(), player.getNick(), joinOrQuitInfo.getMsg());
             //待加入团的标题
-            String title = games.get(0).getTitle();
-
+            String title = game.getTitle();
             //写入数据库
             userMapper.joinGames(kpApproval, title);
             res.add(true);
@@ -79,13 +78,13 @@ public class UserService {
         JoinOrQuitInfoDB joinOrQuitInfoDB = new JoinOrQuitInfoDB();
         for (Long id : joinOrQuitInfo.getId()) {
             joinOrQuitInfoDB.setId(id);
-            List<Game> games = userMapper.searchIdGame(id);
-            if (CollUtil.isEmpty(games)) {
+            Game game = userMapper.searchIdGame(id);
+            if (null == game) {
                 res.add(false);
                 continue;
             }
             //提取对应团原先的玩家列表
-            List<Player> playerList = games.get(0).getPlayers();
+            List<Player> playerList = game.getPlayers();
             if (CollUtil.isEmpty(playerList)) {
                 res.add(false);
                 continue;

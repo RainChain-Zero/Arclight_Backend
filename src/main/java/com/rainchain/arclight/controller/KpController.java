@@ -1,8 +1,8 @@
 package com.rainchain.arclight.controller;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.rainchain.arclight.component.AcceptOrRefuseInfo;
 import com.rainchain.arclight.component.DeleteInfo;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.InviteOrRemoveInfo;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -45,11 +46,10 @@ public class KpController {
         if (game.getId() == null) {
             throw new OperationFailException("id字段为空");
         }
-        List<Game> gameSearch = userService.searchIdGame(game.getId());
-        if (CollUtil.isEmpty(gameSearch)) {
+        Game gameOld = userService.searchIdGame(game.getId());
+        if (null == gameOld) {
             throw new OperationFailException("找不到对应id的团");
         }
-        Game gameOld = gameSearch.get(0);
 
         String kp_qq = game.getKp_qq();
         if (StrUtil.isBlank(kp_qq) || gameOld.getKp_qq().compareTo(kp_qq) != 0) {
@@ -78,5 +78,18 @@ public class KpController {
     public List<Boolean> removePlayers(@RequestBody @Validated InviteOrRemoveInfo inviteOrRemoveInfo) {
         VerifyUtils.verifyInviteOrRemoveInfo(inviteOrRemoveInfo);
         return kpService.removePlayers(inviteOrRemoveInfo);
+    }
+
+    //接受pl的入团申请
+    @PostMapping("/accept")
+    public List<Boolean> acceptPlayers(@RequestBody @Valid AcceptOrRefuseInfo acceptOrRefuseInfo) {
+        VerifyUtils.verifyAcceptOrRefuseInfo(acceptOrRefuseInfo);
+        return kpService.acceptPlayers(acceptOrRefuseInfo);
+    }
+
+    @PostMapping("/refuse")
+    public List<Boolean> refusePlayers(@RequestBody @Valid AcceptOrRefuseInfo acceptOrRefuseInfo) {
+        VerifyUtils.verifyAcceptOrRefuseInfo(acceptOrRefuseInfo);
+        return kpService.refusePlayers(acceptOrRefuseInfo);
     }
 }

@@ -37,6 +37,12 @@ public class PlApplication implements Serializable {
     @TableField(value = "status")
     private Integer status = 0;
 
+    /**
+     * 主持人处理时间，未处理为NULL
+     */
+    @TableField(value = "timestamp")
+    private Long timestamp;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
