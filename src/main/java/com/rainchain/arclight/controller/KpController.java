@@ -6,6 +6,7 @@ import com.rainchain.arclight.component.AcceptOrRefuseInfo;
 import com.rainchain.arclight.component.DeleteInfo;
 import com.rainchain.arclight.component.RemoveInfo;
 import com.rainchain.arclight.entity.Game;
+import com.rainchain.arclight.entity.KpApproval;
 import com.rainchain.arclight.exception.OperationFailException;
 import com.rainchain.arclight.service.KpService;
 import com.rainchain.arclight.service.UserService;
@@ -13,10 +14,7 @@ import com.rainchain.arclight.utils.EncodingUtils;
 import com.rainchain.arclight.utils.VerifyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -83,5 +81,11 @@ public class KpController {
     public List<Boolean> refusePlayers(@RequestBody @Valid AcceptOrRefuseInfo acceptOrRefuseInfo) {
         VerifyUtils.verifyAcceptOrRefuseInfo(acceptOrRefuseInfo);
         return kpService.refusePlayers(acceptOrRefuseInfo);
+    }
+
+    @GetMapping("/getApproval")
+    public List<KpApproval> getApproval(@RequestParam(value = "id", required = false) List<Long> ids, @RequestParam("kp_qq") String kp_qq) {
+        VerifyUtils.qqVerify(kp_qq);
+        return kpService.getApproval(ids, kp_qq);
     }
 }

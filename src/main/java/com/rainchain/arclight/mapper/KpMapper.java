@@ -31,5 +31,8 @@ public interface KpMapper {
 
     void refusePlayers(@Param("id") Long id, @Param("qqs") List<String> qqs, @Param("timestamp") Long timestamp);
 
+    List<KpApproval> getApproval(@Param("ids") List<Long> ids, @Param("kp_qq") String kp_qq);
+
     void addIrregularGame(AuditResult auditResult);
+    
 }

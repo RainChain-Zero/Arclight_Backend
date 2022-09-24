@@ -5,7 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.rainchain.arclight.component.JoinOrQuitInfo;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
-import com.rainchain.arclight.entity.ParticipatingGames;
+import com.rainchain.arclight.entity.PlApplication;
 import com.rainchain.arclight.service.UserService;
 import com.rainchain.arclight.utils.EncodingUtils;
 import com.rainchain.arclight.utils.VerifyUtils;
@@ -55,11 +55,9 @@ public class UserController {
         return userService.quitGames(joinOrQuitInfo);
     }
 
-    //todo 完成查询已加入的团功能
-    @GetMapping("/participate")
-    public List<ParticipatingGames> getParticipatingGames(@RequestParam("qq") String qq) {
+    @GetMapping("/getApplication")
+    public List<PlApplication> getApplication(@RequestParam("qq") String qq) {
         VerifyUtils.qqVerify(qq);
-        return userService.getParticipatingGames(qq);
+        return userService.getApplication(qq);
     }
-
 }

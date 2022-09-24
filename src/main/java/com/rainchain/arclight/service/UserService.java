@@ -6,7 +6,7 @@ import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.KpApproval;
-import com.rainchain.arclight.entity.ParticipatingGames;
+import com.rainchain.arclight.entity.PlApplication;
 import com.rainchain.arclight.mapper.UserMapper;
 import com.rainchain.arclight.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +103,7 @@ public class UserService {
         return res;
     }
 
-    public List<ParticipatingGames> getParticipatingGames(String qq) {
-        return userMapper.getParticipatingGames(qq);
+    public List<PlApplication> getApplication(String qq) {
+        return userMapper.getApplication(qq);
     }
 }

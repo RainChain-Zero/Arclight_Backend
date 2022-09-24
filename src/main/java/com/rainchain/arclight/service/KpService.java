@@ -155,6 +155,10 @@ public class KpService {
         return res;
     }
 
+    public List<KpApproval> getApproval(List<Long> ids, String kp_qq) {
+        return kpMapper.getApproval(ids, kp_qq);
+    }
+
     public void addIrregularGame(AuditResult auditResult) {
         kpMapper.addIrregularGame(auditResult);
     }

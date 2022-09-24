@@ -4,7 +4,7 @@ import com.rainchain.arclight.component.Player;
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
 import com.rainchain.arclight.entity.KpApproval;
-import com.rainchain.arclight.entity.ParticipatingGames;
+import com.rainchain.arclight.entity.PlApplication;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -21,11 +21,11 @@ public interface UserMapper {
 
     List<Game> searchGames(SearchCondition searchCondition);
 
-    List<ParticipatingGames> getParticipatingGames(String qq);
-
     void joinGames(KpApproval kpApproval);
 
     void quitGamesNow(@Param("id") Long id, @Param("players") List<Player> players);
 
     void quitGamesApplication(@Param("ids") List<Long> ids, @Param("qq") String qq);
+
+    List<PlApplication> getApplication(String qq);
 }
