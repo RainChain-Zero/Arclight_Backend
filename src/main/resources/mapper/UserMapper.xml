@@ -97,15 +97,20 @@
         ORDER BY start_time LIMIT ${maxnum}
     </select>
 
-    <update id="joinOrQuitGames">
-        UPDATE games_now
-        SET players=#{players,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler}
-        WHERE id = ${id}
-    </update>
+    <!--    <update id="joinOrQuitGames">-->
+    <!--        UPDATE games_now-->
+    <!--        SET players=#{players,jdbcType=VARCHAR,typeHandler=com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler}-->
+    <!--        WHERE id = ${id}-->
+    <!--    </update>-->
 
     <select id="getParticipatingGames" resultType="com.rainchain.arclight.entity.ParticipatingGames">
         SELECT *
         FROM games_user
         WHERE qq = #{qq}
     </select>
+
+    <insert id="joinGames">
+        REPLACE INTO kp_approval (id,qq,kp_qq,nick,msg) VALUES (#{kpApproval.id},#{kpApproval.qq},#{kpApproval.kp_qq},#{kpApproval.nick},#{kpApproval.msg});
+        REPLACE INTO pl_application (qq,id,title,status) VALUES (#{kpApproval.qq},#{kpApproval.id},#{title},0);
+    </insert>
 </mapper>

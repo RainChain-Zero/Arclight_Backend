@@ -101,7 +101,7 @@ public class Game {
         gameNow.skills = gameNew.skills == null ? this.skills : gameNew.skills;
         gameNow.tips = gameNew.tips == null ? this.tips : gameNew.tips;
         gameNow.des = gameNew.des == null ? this.des : gameNew.des;
-        //不能通过updata修改参团玩家
+        //不能通过update修改参团玩家
         gameNow.players = this.players;
         //对限定群groups去重
         gameNow.groups = CollUtil.distinct(gameNow.groups);

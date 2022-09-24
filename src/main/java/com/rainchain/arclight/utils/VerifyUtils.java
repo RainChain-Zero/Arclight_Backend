@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-//todo 带列表参数的最大长度限制检验
 public class VerifyUtils {
     //校验是否全为数字
     private static final java.util.regex.Pattern NUMBER_PATTERN = java.util.regex.Pattern.compile("-?\\d+(\\.\\d+)?");
@@ -58,13 +57,17 @@ public class VerifyUtils {
     public static void verifyJoinOrQuitInfo(JoinOrQuitInfo joinOrQuitInfo) {
         List<Long> ids = joinOrQuitInfo.getId();
         Player player = joinOrQuitInfo.getPlayer();
-        if (CollUtil.isEmpty(ids)) {
-            throw new OperationFailException("至少需要提供一个id");
+        if (CollUtil.isEmpty(ids) || ids.size() > 10) {
+            throw new OperationFailException("id列表长度不合法！");
         }
         if (null == player) {
             throw new OperationFailException("缺少玩家信息");
         }
         VerifyUtils.qqVerify(player.getQq());
+        //若批量加入，不可填入入团附加信息(msg)
+        if (ids.size() > 1 && StrUtil.isNotBlank(joinOrQuitInfo.getMsg())) {
+            throw new OperationFailException("批量加入时不可填入入团附加信息");
+        }
     }
 
     public static void verifyInviteOrRemoveInfo(InviteOrRemoveInfo inviteOrRemoveInfo) {

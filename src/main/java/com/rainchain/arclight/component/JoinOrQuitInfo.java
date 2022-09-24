@@ -21,4 +21,6 @@ public class JoinOrQuitInfo {
     @Valid
     private Player player;
 
+    private String msg;
+
 }

@@ -34,12 +34,14 @@ public class UserController {
         return userService.searchGames(searchCondition);
     }
 
-    //加入团
+    /*
+     * 加入团
+     * 如果返回false，可能为团已满人或者团不存在
+     * */
     @PostMapping("/join")
     public List<Boolean> joinGames(HttpServletRequest request) throws IOException {
         String content = EncodingUtils.charReader(request);
         JoinOrQuitInfo joinOrQuitInfo = JSON.parseObject(content, JoinOrQuitInfo.class);
-
         //参数校验
         VerifyUtils.verifyJoinOrQuitInfo(joinOrQuitInfo);
 

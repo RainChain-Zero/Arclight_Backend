@@ -2,9 +2,10 @@ package com.rainchain.arclight.mapper;
 
 import com.rainchain.arclight.component.SearchCondition;
 import com.rainchain.arclight.entity.Game;
-import com.rainchain.arclight.entity.JoinOrQuitInfoDB;
+import com.rainchain.arclight.entity.KpApproval;
 import com.rainchain.arclight.entity.ParticipatingGames;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +18,9 @@ public interface UserMapper {
     List<Game> searchGames(SearchCondition searchCondition);
 
     //加入或退出团
-    void joinOrQuitGames(JoinOrQuitInfoDB joinOrQuitInfoDB);
+    //void joinOrQuitGames(JoinOrQuitInfoDB joinOrQuitInfoDB);
 
     List<ParticipatingGames> getParticipatingGames(String qq);
+
+    void joinGames(@Param("kpApproval") KpApproval kpApproval, @Param("title") String title);
 }
