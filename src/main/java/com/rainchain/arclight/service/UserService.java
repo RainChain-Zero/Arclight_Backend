@@ -53,11 +53,13 @@ public class UserService {
             //先提取id对应的团数据
             Game game = new Game();
             game.setId(id);
+            int index = games.indexOf(game);
             //如果没有这个团，加入失败
-            if (!CollUtil.contains(games, game)) {
+            if (-1 == index) {
                 res.add(false);
                 continue;
             }
+            game = games.get(index);
             //满人的团无法加入
             //todo 讨论加入ob如何判断
             if (game.isIsfull()) {

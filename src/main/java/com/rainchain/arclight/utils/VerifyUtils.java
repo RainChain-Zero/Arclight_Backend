@@ -56,7 +56,7 @@ public class VerifyUtils {
 
     //校验JoinOrQuitInfo
     public static void verifyJoinOrQuitInfo(JoinOrQuitInfo joinOrQuitInfo) {
-        List<Long> ids = joinOrQuitInfo.getId();
+        List<Long> ids = joinOrQuitInfo.getIds();
         Player player = joinOrQuitInfo.getPlayer();
         if (CollUtil.isEmpty(ids) || ids.size() > 10) {
             throw new OperationFailException("id列表长度不合法！");

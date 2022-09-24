@@ -1,18 +1,14 @@
 package com.rainchain.arclight.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.stereotype.Component;
 
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Component
 public class BotAccount {
     @Length(min = 6, max = 10, message = "不合法的QQ号！")
     private String qq;

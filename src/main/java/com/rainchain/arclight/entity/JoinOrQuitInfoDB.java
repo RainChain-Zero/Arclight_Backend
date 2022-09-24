@@ -7,14 +7,12 @@ import com.rainchain.arclight.component.Player;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 @TableName(autoResultMap = true)
 public class JoinOrQuitInfoDB {
     private Long id;
