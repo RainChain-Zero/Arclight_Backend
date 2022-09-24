@@ -104,17 +104,39 @@
                 #{isfull}, #{ob}, #{tags}, #{skills}, #{tips},
                 #{des}, #{update_time});
     </update>
-    <delete id="deleteGame">
+
+    <delete id="deleteGames">
         DELETE
         FROM games_now
-        WHERE id = ${id}
-          AND kp_qq = #{qq}
-    </delete>
-    <update id="addDeleteInfo">
+        WHERE kp_qq = #{kp_qq}
+        AND id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            ${id}
+        </foreach>;
+
         UPDATE games_all
         SET delete_info = #{info}
-        WHERE id = ${id}
-    </update>
+        WHERE kp_qq = #{kp_qq}
+        AND id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            ${id}
+        </foreach>;
+
+        DELETE FROM kp_approval
+        WHERE kp_qq = #{kp_qq}
+        AND id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            ${id}
+        </foreach>;
+
+        DELETE FROM pl_application
+        WHERE kp_qq = #{kp_qq}
+        AND id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            ${id}
+        </foreach>;
+    </delete>
+
     <insert id="addIrregularGame">
         INSERT INTO games_irregular (title, kp_qq, delete_time, des, category, keywords)
         VALUES (#{title}, #{kp_qq}, #{deleteTime}, #{des}, #{Label}, #{Keywords})

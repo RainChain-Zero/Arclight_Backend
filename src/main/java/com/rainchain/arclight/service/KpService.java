@@ -48,23 +48,14 @@ public class KpService {
         return gameList;
     }
 
-    public List<Boolean> deleteGame(DeleteInfo deleteInfo, String key) {
-        String qq = deleteInfo.getQq();
+    public void deleteGame(DeleteInfo deleteInfo, String key) {
+        String qq = deleteInfo.getKp_qq();
         String timeNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         String botQq = VerifyUtils.decodeQq(key);
-        deleteInfo.setInfo(qq + "在" + timeNow + "通过" + botQq + "删除");
+        String info = qq + "在" + timeNow + "通过" + botQq + "删除";
 
-        List<Boolean> res = new ArrayList<>();
         //批量删除
-        deleteInfo.getId().forEach(id -> {
-            if (kpMapper.deleteGame(id, qq) == 0) {
-                res.add(false);
-            } else {
-                kpMapper.addDeleteInfo(id, deleteInfo.getInfo());
-                res.add(true);
-            }
-        });
-        return res;
+        kpMapper.deleteGames(deleteInfo.getIds(), qq, info);
     }
 
     //从已正式加入的玩家中移除

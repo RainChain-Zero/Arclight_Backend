@@ -32,6 +32,12 @@ public class PlApplication implements Serializable {
     private String title;
 
     /**
+     * 主持人qq
+     */
+    @TableField(value = "kp_qq")
+    private String kp_qq;
+
+    /**
      * 0：等待中；1：申请被同意；2：申请被拒绝
      */
     @TableField(value = "status")

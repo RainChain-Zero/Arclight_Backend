@@ -30,6 +30,12 @@ public class KpApproval implements Serializable {
     private String qq;
 
     /**
+     * 团名称
+     */
+    @TableField(value = "title")
+    private String title;
+
+    /**
      * 主持人qq
      */
     @TableField(value = "kp_qq")
@@ -83,6 +89,7 @@ public class KpApproval implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", qq=").append(qq);
+        sb.append(", title=").append(title);
         sb.append(", kp_qq=").append(kp_qq);
         sb.append(", nick=").append(nick);
         sb.append(", msg=").append(msg);

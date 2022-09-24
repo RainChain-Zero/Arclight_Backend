@@ -61,9 +61,9 @@ public class KpController {
     }
 
     @PostMapping("/delete")
-    public List<Boolean> deleteGame(@RequestBody @Validated DeleteInfo deleteInfo, @RequestParam("api_key") String key) {
-        VerifyUtils.qqVerify(deleteInfo.getQq());
-        return kpService.deleteGame(deleteInfo, key);
+    public void deleteGame(@RequestBody @Validated DeleteInfo deleteInfo, @RequestParam("api_key") String key) {
+        VerifyUtils.qqVerify(deleteInfo.getKp_qq());
+        kpService.deleteGame(deleteInfo, key);
     }
 
     @PostMapping("/remove")

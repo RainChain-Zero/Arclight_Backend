@@ -23,7 +23,7 @@ public interface UserMapper {
 
     List<ParticipatingGames> getParticipatingGames(String qq);
 
-    void joinGames(@Param("kpApproval") KpApproval kpApproval, @Param("title") String title);
+    void joinGames(KpApproval kpApproval);
 
     void quitGamesNow(@Param("id") Long id, @Param("players") List<Player> players);
 

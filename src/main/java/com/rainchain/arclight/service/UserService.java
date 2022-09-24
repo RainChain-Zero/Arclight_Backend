@@ -65,11 +65,10 @@ public class UserService {
                 res.add(false);
                 continue;
             }
-            KpApproval kpApproval = new KpApproval(id, playerQQ, game.getKp_qq(), player.getNick(), joinOrQuitInfo.getMsg());
-            //待加入团的标题
-            String title = game.getTitle();
+            KpApproval kpApproval = new KpApproval(id, playerQQ, game.getTitle(), game.getKp_qq(),
+                    player.getNick(), joinOrQuitInfo.getMsg());
             //写入数据库
-            userMapper.joinGames(kpApproval, title);
+            userMapper.joinGames(kpApproval);
             res.add(true);
         }
         return res;

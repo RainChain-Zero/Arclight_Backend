@@ -20,9 +20,7 @@ public interface KpMapper {
 
     void updateGame(Game game);
 
-    int deleteGame(Long id, String qq);
-
-    void addDeleteInfo(Long id, String info);
+    int deleteGames(List<Long> ids, String kp_qq, String info);
 
     void removePlayers(@Param("id") Long id, @Param("players") List<Player> players,
                        @Param("isfull") boolean isfull, @Param("timestamp") Long timestamp);

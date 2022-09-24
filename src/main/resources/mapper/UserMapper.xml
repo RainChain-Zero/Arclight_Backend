@@ -133,7 +133,7 @@
     </select>
 
     <insert id="joinGames">
-        REPLACE INTO kp_approval (id,qq,kp_qq,nick,msg) VALUES (#{kpApproval.id},#{kpApproval.qq},#{kpApproval.kp_qq},#{kpApproval.nick},#{kpApproval.msg});
-        REPLACE INTO pl_application (qq,id,title,status) VALUES (#{kpApproval.qq},#{kpApproval.id},#{title},0);
+        REPLACE INTO kp_approval (id,qq,title,kp_qq,nick,msg) VALUES (#{id},#{qq},#{title},#{kp_qq},#{nick},#{msg});
+        REPLACE INTO pl_application (qq,id,title,kp_qq,status) VALUES (#{qq},#{id},#{title},#{kp_qq},0);
     </insert>
 </mapper>
