@@ -13,7 +13,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
@@ -26,7 +25,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Component
 @JsonIgnoreProperties(value = {"update_time", "timestamp"})
 @TableName(autoResultMap = true)
 public class Game {
@@ -81,6 +79,24 @@ public class Game {
     private Long timestamp = new Date().getTime() / 1000;
 
     private final String update_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
+    //重写equals和hashcode方法，id相同则代表为同一个团
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) {
+            return true;
+        }
+        if (that == null || getClass() != that.getClass()) {
+            return false;
+        }
+        Game game = (Game) that;
+        return id.equals(game.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
     //获取更新后的团本信息
     public Game updateGame(Game gameNew) {

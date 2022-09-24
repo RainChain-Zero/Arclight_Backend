@@ -27,7 +27,7 @@ public interface KpMapper {
 
     void inviteOrRemovePlayers(InviteOrRemoveInfo inviteOrRemoveInfo);
 
-    KpApproval getPlApplication(Long id, String qq);
+    List<KpApproval> getPlApplication(@Param("id") Long id, @Param("qqs") List<String> qqs);
 
     void acceptPlayers(@Param("id") Long id, @Param("qqs") List<String> qqs, @Param("playersDb") List<Player> playersDb,
                        @Param("timestamp") Long timestamp);

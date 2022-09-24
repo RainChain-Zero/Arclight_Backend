@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 public class JoinOrQuitInfo {
     @Valid
-    private List<@Digits(message = "id必须为非负整数", integer = 2147483647, fraction = 0) Long> id;
+    private List<@Digits(message = "id必须为非负整数", integer = 2147483647, fraction = 0) Long> ids;
 
     @Valid
     private Player player;

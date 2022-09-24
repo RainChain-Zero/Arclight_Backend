@@ -40,17 +40,21 @@ public class UserService {
         return userMapper.searchGames(SearchCondition.tagsAndGroupSearcher(searchCondition));
     }
 
+    //申请加入团
     public List<Boolean> joinGames(JoinOrQuitInfo joinOrQuitInfo) {
         Player player = joinOrQuitInfo.getPlayer();
         String playerQQ = player.getQq();
+        List<Long> ids = joinOrQuitInfo.getIds();
         List<Boolean> res = new ArrayList<>();
-        //去重
+        //获取所有游戏列表
+        List<Game> games = userMapper.searchIdsGames(ids);
         //对每个id单独判断是否加入成功
-        for (Long id : joinOrQuitInfo.getId()) {
+        for (Long id : ids) {
             //先提取id对应的团数据
-            Game game = userMapper.searchIdGame(id);
+            Game game = new Game();
+            game.setId(id);
             //如果没有这个团，加入失败
-            if (game == null) {
+            if (!CollUtil.contains(games, game)) {
                 res.add(false);
                 continue;
             }
@@ -70,13 +74,15 @@ public class UserService {
         return res;
     }
 
-    //退出团
+    //退出团,一并退出申请列表和已经通过的玩家列表
     public List<Boolean> quitGames(JoinOrQuitInfo joinOrQuitInfo) {
         String playerQQ = joinOrQuitInfo.getPlayer().getQq();
         List<Boolean> res = new ArrayList<>();
+        List<Long> ids = joinOrQuitInfo.getIds();
 
+        List<Game> games = userMapper.searchIdsGames(ids);
         JoinOrQuitInfoDB joinOrQuitInfoDB = new JoinOrQuitInfoDB();
-        for (Long id : joinOrQuitInfo.getId()) {
+        for (Long id : ids) {
             joinOrQuitInfoDB.setId(id);
             Game game = userMapper.searchIdGame(id);
             if (null == game) {

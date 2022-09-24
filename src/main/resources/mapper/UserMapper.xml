@@ -109,6 +109,13 @@
         WHERE qq = #{qq}
     </select>
 
+    <select id="searchIdsGames" resultType="com.rainchain.arclight.entity.Game">
+        SELECT * FROM games_now WHERE id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            ${id}
+        </foreach>
+    </select>
+
     <insert id="joinGames">
         REPLACE INTO kp_approval (id,qq,kp_qq,nick,msg) VALUES (#{kpApproval.id},#{kpApproval.qq},#{kpApproval.kp_qq},#{kpApproval.nick},#{kpApproval.msg});
         REPLACE INTO pl_application (qq,id,title,status) VALUES (#{kpApproval.qq},#{kpApproval.id},#{title},0);

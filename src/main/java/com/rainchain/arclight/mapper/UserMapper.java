@@ -15,6 +15,9 @@ import java.util.List;
 public interface UserMapper {
     Game searchIdGame(Long id);
 
+    //通过id列表搜索团本
+    List<Game> searchIdsGames(List<Long> ids);
+
     List<Game> searchGames(SearchCondition searchCondition);
 
     //加入或退出团

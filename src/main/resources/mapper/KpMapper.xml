@@ -11,8 +11,11 @@
     <select id="getPlApplication" resultType="com.rainchain.arclight.entity.KpApproval">
         SELECT *
         FROM kp_approval
-        WHERE qq = #{qq}
-          AND id = #{id} LIMIT 1
+        WHERE id = #{id}
+        AND qq in
+        <foreach collection="qqs" item="qq" open="(" separator="," close=")">
+            #{qq}
+        </foreach>
     </select>
 
     <insert id="addGame" parameterType="com.rainchain.arclight.entity.Game" useGeneratedKeys="true" keyProperty="id">

@@ -147,12 +147,16 @@ public class KpService {
         if (!game.getKp_qq().equals(acceptOrRefuseInfo.getKp_qq())) {
             throw new OperationFailException("你不是该团的主持人");
         }
-        //获取玩家列表
+        //新玩家列表
         List<Player> playersNew = new ArrayList<>();
+        //获取申请的玩家列表
+        List<KpApproval> kpApprovals = kpMapper.getPlApplication(acceptOrRefuseInfo.getId(), qqs);
         qqs.forEach(qq -> {
-            //通过qq查找在待评审的列表中的玩家
-            KpApproval kpApproval = kpMapper.getPlApplication(acceptOrRefuseInfo.getId(), qq);
-            if (null == kpApproval) {
+            KpApproval kpApproval = new KpApproval();
+            kpApproval.setQq(qq);
+            kpApproval.setId(acceptOrRefuseInfo.getId());
+            //若玩家不在申请列表中
+            if (!CollUtil.contains(kpApprovals, kpApproval)) {
                 res.add(false);
                 return;
             }
@@ -181,10 +185,15 @@ public class KpService {
         if (!game.getKp_qq().equals(acceptOrRefuseInfo.getKp_qq())) {
             throw new OperationFailException("你不是该团的主持人");
         }
+        //获取待申请的玩家列表
+        List<KpApproval> kpApprovals = kpMapper.getPlApplication(acceptOrRefuseInfo.getId(), qqs);
         qqs.forEach(qq -> {
             //通过qq查找在待评审的列表中的玩家
-            KpApproval kpApproval = kpMapper.getPlApplication(acceptOrRefuseInfo.getId(), qq);
-            if (null == kpApproval) {
+            KpApproval kpApproval = new KpApproval();
+            kpApproval.setQq(qq);
+            kpApproval.setId(acceptOrRefuseInfo.getId());
+            //若玩家不在申请列表中
+            if (!CollUtil.contains(kpApprovals, kpApproval)) {
                 res.add(false);
                 return;
             }

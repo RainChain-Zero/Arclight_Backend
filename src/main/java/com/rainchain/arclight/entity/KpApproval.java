@@ -63,10 +63,7 @@ public class KpApproval implements Serializable {
         }
         KpApproval other = (KpApproval) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getQq() == null ? other.getQq() == null : this.getQq().equals(other.getQq()))
-                && (this.getKp_qq() == null ? other.getKp_qq() == null : this.getKp_qq().equals(other.getKp_qq()))
-                && (this.getNick() == null ? other.getNick() == null : this.getNick().equals(other.getNick()))
-                && (this.getMsg() == null ? other.getMsg() == null : this.getMsg().equals(other.getMsg()));
+                && (this.getQq() == null ? other.getQq() == null : this.getQq().equals(other.getQq()));
     }
 
     @Override
@@ -75,9 +72,6 @@ public class KpApproval implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getQq() == null) ? 0 : getQq().hashCode());
-        result = prime * result + ((getKp_qq() == null) ? 0 : getKp_qq().hashCode());
-        result = prime * result + ((getNick() == null) ? 0 : getNick().hashCode());
-        result = prime * result + ((getMsg() == null) ? 0 : getMsg().hashCode());
         return result;
     }
 
